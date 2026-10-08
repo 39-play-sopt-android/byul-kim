@@ -36,6 +36,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 // ───── 피그마 색깔 ─────
 val Black = Color(0xFF121212)
@@ -162,6 +164,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             //modifier (소문자) 받아 온 꾸밈(상태바 여백)부터 적용? 이거 대문자 소문자가 헷갈려요....
             .fillMaxSize() //화면 전체 크기
+            .imePadding() //키보드가 올라오면 그만큼 밀어 올리기
+            .verticalScroll(rememberScrollState()) //세로 스크롤 가능하게
             .padding(horizontal = 16.dp) //좌우 띄우기
             .padding(top = 60.dp) //위 띄우기
     ) {

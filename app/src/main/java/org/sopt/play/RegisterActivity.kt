@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.ui.theme.PlaySoptTheme
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 class RegisterActivity : ComponentActivity() { //RegisterActivity 화면 만들기
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +74,8 @@ fun RegisterScreen(
     Column( //세로 배치
         modifier = modifier
             .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp)
             .padding(top = 60.dp)
     ) {
