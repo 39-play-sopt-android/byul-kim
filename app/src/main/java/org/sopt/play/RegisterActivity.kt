@@ -1,5 +1,6 @@
 package org.sopt.play
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import androidx.activity.ComponentActivity
@@ -24,7 +25,18 @@ class RegisterActivity : ComponentActivity() { //RegisterActivity 화면 만들�
         setContent {
             PlaySoptTheme { //테마 입히고 흰 배경 뼈대 만듦
                 Scaffold(containerColor = White) { innerPadding ->
-                    RegisterScreen(modifier = Modifier.padding(innerPadding))
+                    RegisterScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onRegisterClick = { email, password ->
+                            //회원가입 버튼을 누르면 여기가 실행됨
+                            val resultIntent = Intent().apply { //빈 상자 만들기
+                                putExtra("email", email)       //상자에 이메일 넣기
+                                putExtra("password", password) //상자에 비밀번호 넣기
+                            }
+                            setResult(RESULT_OK, resultIntent) //성공 표시와 함께 상자 보내기
+                            finish()  //회원가입 화면 닫기 → 로그인 화면으로 돌아감
+                        }
+                    )
                 }
             }
         }
@@ -32,7 +44,13 @@ class RegisterActivity : ComponentActivity() { //RegisterActivity 화면 만들�
 }
 
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier) {
+fun RegisterScreen(
+    modifier: Modifier = Modifier,
+    onRegisterClick: (String, String) -> Unit = { _, _ -> }
+    //onRegisterClick 버튼 누르면 할 일을 밖에서 받음. (String, String) 이메일, 비밀번호 2개를 넘겨줌
+    // -> Unit 돌려주는건 없음
+    //= { _, _ -> } 는 기본값: 아무것도 안 함 (Preview용)
+    ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -111,7 +129,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(
-            onClick = { }, //다음 단계에서 "로그인 화면에 정보 넘기고 닫기" 넣을 자리
+            onClick = { onRegisterClick(email, password) }, //입력한 이메일 , 비밀번호를 밖으로 넘김
             enabled = isRegisterEnabled, //조건이 맞으면 켜짐
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(

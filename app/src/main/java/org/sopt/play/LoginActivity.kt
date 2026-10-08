@@ -29,6 +29,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.focus.onFocusChanged
 import android.util.Patterns
 import org.sopt.play.ui.theme.PlaySoptTheme
+import android.app.Activity
+import android.content.Intent
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
 
 // ───── 피그마 색깔 ─────
 val Black = Color(0xFF121212)
@@ -117,6 +124,26 @@ fun LoginScreen(modifier: Modifier = Modifier) {
     //remember { } 다시 그려도 값을 잊지 않음
     //by는 email.value 대신 그냥 email로 쓰게 해줌
 
+    val context = LocalContext.current //지금 화면 정보 (화면 이동, 토스트에 필요)
+
+    var registeredEmail by remember { mutableStateOf("") }
+    var registeredPassword by remember { mutableStateOf("") }
+    //회원가입에서 받아 온 정보를 기억하는 상자 2개
+
+    val registerLauncher = rememberLauncherForActivityResult(
+        //다른 화면을 열고, 그 화면이 닫히면 답장을 받는 장치를 만들어서 registerLauncher 담음
+        ActivityResultContracts.StartActivityForResult()
+        //화면을 열고 결과를 받는다 (우편함 종류)
+    ) { result ->
+        //회원가입 화면이 닫히고 돌아오면 여기가 실행됨 (답장 우편함)
+        if (result.resultCode == Activity.RESULT_OK) { //성공 표시가 붙어 왔으면
+            registeredEmail = result.data?.getStringExtra("email") ?: ""
+            registeredPassword = result.data?.getStringExtra("password") ?: ""
+            //상자에서 email, password 이름표 붙은 걸 꺼내서 기억
+            //?. 와 ?: "" 는 상자가 비어 있으면(null) 빈 글자를 쓰라는 안전장치
+        }
+    }
+
     val isEmailError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()
     //뭔가 쳤는데(isNotEmpty) 그리고(&&) 이메일 모양이 아니면(!~matches) → 에러(true)
     //isNotEmpty() 비어 있지 않으면 true → 아무것도 안 쳤을 땐 에러 안 띄우려고
@@ -176,7 +203,21 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
         // 로그인 버튼
         Button(
-            onClick = { }, //누르면 할 일
+            onClick = { //누르면 할 일
+                if (registeredEmail.isNotEmpty() && email == registeredEmail && password == registeredPassword) {
+                    //회원가입한 적 있고 && 이메일 같고 && 비밀번호 같으면 → 로그인 성공
+                    val intent = Intent(context, MainActivity::class.java).apply {
+                        // 메인화면으로 가는 요청서 만들기
+                        // 출발: 지금 화면(context), 도착: MainActivity. .apply { }는 요청서에 옵션을 덧붙이는 자리
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    // 로그인 화면 기록 지우기 → 메인에서 뒤로가기 하면 앱 꺼짐
+                    }
+                    context.startActivity(intent) //메인 화면으로 이동
+                } else {
+                    //하나라도 다르면 → 실패 토스트
+                    Toast.makeText(context, "이메일 또는 비밀번호가 올바르지 않아요.", Toast.LENGTH_SHORT).show()
+                } //LENGTH_SHORT → 약 2초 .show() → 보여주기
+            },
             enabled = isLoginEnabled, //조건 맞으면 켜짐, 아니면 꺼짐
             shape = CircleShape, //알약 모양
             colors = ButtonDefaults.buttonColors( //버튼 색 정하는 거
@@ -201,7 +242,16 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.align(Alignment.CenterHorizontally) //얘만 가운데 정령
         ) { // Modifier.align 나 하나만 정렬할게! 이런 느낌 align은 Column 안에서만 사용 가능
             Text(text = "아직 계정이 없으신가요?", style = M14, color = Gray3)
-            Text(text = "회원가입하기", style = M14, color = Gray6)
+            Text(
+                text = "회원가입하기",
+                style = M14,
+                color = Gray6,
+                modifier = Modifier.clickable {
+                    registerLauncher.launch(Intent(context, RegisterActivity::class.java))
+                    //intent ~ (java) 회원가입 화면으로 가는 요청서
+                    //register~ 우편함을 통해 열기
+                }
+            )
         }
     }
 }
@@ -219,7 +269,7 @@ fun LoginTextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
     //isFocused 포커스 상태인가?
-    //mutableStateOf(false)	처음엔 false (안 누른 상태) 바뀌면 화면 다시 그림
+    //mutableStateOf(false) 처음엔 false (안 누른 상태) 바뀌면 화면 다시 그림
     val borderColor = when {
         isError -> Red //에러면 빨강
         isFocused -> Gray5 //에러 아니고 입력 중
@@ -251,7 +301,7 @@ fun LoginTextField(
             modifier = Modifier //입력칸 테두리, 여백 (얜 대문자인거.. 헷갈려요)
                 .fillMaxWidth() //너비 꽉 채우기
                 .onFocusChanged { isFocused = it.isFocused } //.onFocusChanged { } 포커스 바뀔때 마다 괄호 안 실행
-                // it 바뀐 포커스 정보 it.isFocused	지금 포커스 상태인지 (true/false)
+                // it 바뀐 포커스 정보 it.isFocused    지금 포커스 상태인지 (true/false)
                 .border(width = 2.dp, color = borderColor, shape = RoundedCornerShape(12.dp))
                 //borderColor 상황에 따라 바뀌는 거
                 .padding(16.dp),
