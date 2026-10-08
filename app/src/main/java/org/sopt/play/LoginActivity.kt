@@ -31,25 +31,24 @@ import android.util.Patterns
 import org.sopt.play.ui.theme.PlaySoptTheme
 
 // ───── 피그마 색깔 ─────
-private val Black = Color(0xFF121212)
-//private 이 파일 안에서 쓴다, val 안 바뀌는거
-private val Gray1 = Color(0xFFF7F7F7)
-private val Gray2 = Color(0xFFD1D5D6)
-private val Gray3 = Color(0xFFB2BABD)
-private val Gray5 = Color(0xFF505559)
-private val Gray6 = Color(0xFF23272A)
-private val White = Color(0xFFFFFFFF)
-private val Red = Color(0xFFFF4D4D)
+val Black = Color(0xFF121212)
+val Gray1 = Color(0xFFF7F7F7)
+val Gray2 = Color(0xFFD1D5D6)
+val Gray3 = Color(0xFFB2BABD)
+val Gray5 = Color(0xFF505559)
+val Gray6 = Color(0xFF23272A)
+val White = Color(0xFFFFFFFF)
+val Red = Color(0xFFFF4D4D)
 
 // ───── 피그마 글꼴 ─────
-private val Pretendard = FontFamily(
+val Pretendard = FontFamily(
     Font(R.font.pretendard_bold, FontWeight.Bold),
     Font(R.font.pretendard_semibold, FontWeight.SemiBold),
     Font(R.font.pretendard_medium, FontWeight.Medium)
 )
 //R 프로젝트, res 폴더의 주소록
 
-private val B28 = TextStyle(
+val B28 = TextStyle(
     fontFamily = Pretendard,
     fontWeight = FontWeight.Bold,
     fontSize = 28.sp,
@@ -57,7 +56,7 @@ private val B28 = TextStyle(
     letterSpacing = (-0.28).sp //자간
 )
 
-private val Sb16 = TextStyle(
+val Sb16 = TextStyle(
     fontFamily = Pretendard,
     fontWeight = FontWeight.SemiBold,
     fontSize = 16.sp,
@@ -65,7 +64,7 @@ private val Sb16 = TextStyle(
     letterSpacing = (-0.16).sp
 )
 
-private val M18 = TextStyle(
+val M18 = TextStyle(
     fontFamily = Pretendard,
     fontWeight = FontWeight.Medium,
     fontSize = 18.sp,
@@ -73,7 +72,7 @@ private val M18 = TextStyle(
     letterSpacing = (-0.18).sp
 )
 
-private val Sb14 = TextStyle(
+val Sb14 = TextStyle(
     fontFamily = Pretendard,
     fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp,
@@ -81,7 +80,7 @@ private val Sb14 = TextStyle(
     letterSpacing = (-0.14).sp
 )
 
-private val M14 = TextStyle(
+val M14 = TextStyle(
     fontFamily = Pretendard,
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
