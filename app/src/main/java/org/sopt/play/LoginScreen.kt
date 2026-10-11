@@ -1,15 +1,7 @@
 package org.sopt.play
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,29 +38,15 @@ import org.sopt.play.ui.theme.Gray6
 import org.sopt.play.ui.theme.M14
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.Sb14
-import org.sopt.play.ui.theme.White
-
-class LoginActivity : ComponentActivity() {
-    //LoginActivity 방 만들기 ComponentActivity 기능 사용
-    override fun onCreate(savedInstanceState: Bundle?) {
-        //onCreate 화면이 처음 만들어질 때 (생명주기) override 원래 있는 onCreate 고쳐쓰기
-        //saved~Bundle? 화면이 다시 만들어질 때 이전 상태를 담아 오는 상자 ?는 비어 있을(null) 수도 있다는 뜻
-        super.onCreate(savedInstanceState) //super 부모
-        enableEdgeToEdge() //화면을 상태바, 하단바까지 꽉 채움
-        setContent { //안에 쓴 Compose 코드가 화면에 그려짐
-            PlaySoptTheme { //앱 테마
-                Scaffold(containerColor = White) { innerPadding ->
-                    //Scaffold 화면 뼈대 con~white 배경색
-                    //Scaffold가 상태바에 안 가리려면 이만큼 띄워 하고 여백 값 넘겨주는 거
-                    LoginScreen(modifier = Modifier.padding(innerPadding))
-                } //아래 LoginScreen을 불러서 그리고 받은 여백을 꾸밈으로 넘기기
-            }
-        }
-    }
-}
+//Ctrl + Alt + o 누르면 자동 정리
 
 @Composable //@Composable: 화면 그리는 함수 표시
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    registeredEmail: String,       // 회원가입한 이메일 (밖에서 받음)
+    registeredPassword: String,    // 회원가입한 비밀번호 (밖에서 받음)
+    onLoginSuccess: () -> Unit,    // 로그인 성공하면 할 일 (밖에서 정함)
+    onRegisterClick: () -> Unit,   // 회원가입하기 누르면 할 일 (밖에서 정함)
+    modifier: Modifier = Modifier) {
     //modifier: Modifier = Modifier: 밖에서 꾸밈을 받고, 안 주면 빈 꾸밈
     var email by remember { mutableStateOf("") } //var는 바뀌는 상자
     var password by remember { mutableStateOf("") }
@@ -80,23 +57,6 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
     val context = LocalContext.current //지금 화면 정보 (화면 이동, 토스트에 필요)
 
-    var registeredEmail by remember { mutableStateOf("") }
-    var registeredPassword by remember { mutableStateOf("") }
-    //회원가입에서 받아 온 정보를 기억하는 상자 2개
-
-    val registerLauncher = rememberLauncherForActivityResult(
-        //다른 화면을 열고, 그 화면이 닫히면 답장을 받는 장치를 만들어서 registerLauncher 담음
-        ActivityResultContracts.StartActivityForResult()
-        //화면을 열고 결과를 받는다 (우편함 종류)
-    ) { result ->
-        //회원가입 화면이 닫히고 돌아오면 여기가 실행됨 (답장 우편함)
-        if (result.resultCode == Activity.RESULT_OK) { //성공 표시가 붙어 왔으면
-            registeredEmail = result.data?.getStringExtra("email") ?: ""
-            registeredPassword = result.data?.getStringExtra("password") ?: ""
-            //상자에서 email, password 이름표 붙은 걸 꺼내서 기억
-            //?. 와 ?: "" 는 상자가 비어 있으면(null) 빈 글자를 쓰라는 안전장치
-        }
-    }
 
     val isEmailError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()
     //뭔가 쳤는데(isNotEmpty) 그리고(&&) 이메일 모양이 아니면(!~matches) → 에러(true)
@@ -162,13 +122,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             onClick = { //누르면 할 일
                 if (registeredEmail.isNotEmpty() && email == registeredEmail && password == registeredPassword) {
                     //회원가입한 적 있고 && 이메일 같고 && 비밀번호 같으면 → 로그인 성공
-                    val intent = Intent(context, MainActivity::class.java).apply {
-                        // 메인화면으로 가는 요청서 만들기
-                        // 출발: 지금 화면(context), 도착: MainActivity. .apply { }는 요청서에 옵션을 덧붙이는 자리
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    // 로그인 화면 기록 지우기 → 메인에서 뒤로가기 하면 앱 꺼짐
-                    }
-                    context.startActivity(intent) //메인 화면으로 이동
+                    onLoginSuccess()   // "로그인 성공했어!" 하고 밖에 알리기
                 } else {
                     //하나라도 다르면 → 실패 토스트
                     Toast.makeText(context, "이메일 또는 비밀번호가 올바르지 않아요.", Toast.LENGTH_SHORT).show()
@@ -202,11 +156,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 text = "회원가입하기",
                 style = M14,
                 color = Gray6,
-                modifier = Modifier.clickable {
-                    registerLauncher.launch(Intent(context, RegisterActivity::class.java))
-                    //intent ~ (java) 회원가입 화면으로 가는 요청서
-                    //register~ 우편함을 통해 열기
-                }
+                modifier = Modifier.clickable { onRegisterClick() }   // "회원가입 눌렸어!" 하고 밖에 알리기
             )
         }
     }
@@ -216,6 +166,11 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun LoginScreenPreview() {
     PlaySoptTheme {
-        LoginScreen()
+        LoginScreen(
+            registeredEmail = "",
+            registeredPassword = "",
+            onLoginSuccess = {},
+            onRegisterClick = {},
+        )
     }
 }
