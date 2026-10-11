@@ -1,0 +1,66 @@
+package org.sopt.play.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import org.sopt.play.R
+import org.sopt.play.ui.theme.B28
+import org.sopt.play.ui.theme.Black
+import org.sopt.play.ui.theme.PlaySoptTheme
+import org.sopt.play.ui.theme.White
+
+@Composable
+
+fun PlaySoptTopBar(modifier: Modifier = Modifier){
+    Row( //가로로 나란히 배치
+        modifier = modifier
+            .fillMaxWidth() //가로로 꽉 채우기
+            .background(White) //배경 흰색
+            .padding(start = 16.dp, end = 6.dp) , //여백
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,      // 글자랑 아이콘 세로 가운데 맞추기
+    ) {
+        //왼쪽 앱 이름
+        Text(
+            text = "PLAY SOPT",
+            style = B28,
+            color = Black,
+        )
+
+        //오른쪽 검색 아이콘
+        Icon(
+            painter = painterResource(R.drawable.ic_search),
+            // painterResource: res 폴더의 그림 파일을 불러오는 함수
+            // R = res 폴더 주소록, R.drawable.ic_search = drawable 폴더의 ic_search.xml
+
+            contentDescription = "검색",
+            // 의미 있는 아이콘이면 설명을 쓰고, 그냥 꾸밈용이면 null
+
+            tint = Black,
+
+            modifier = Modifier
+                .padding(10.dp)
+                .size(28.dp),
+                // 순서 중요! padding 먼저 → 바깥 여백
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlaySoptTopBarPreview(){
+    PlaySoptTheme { // 앱 테마 입히기
+        PlaySoptTopBar() // 탑바 그리기
+    }
+}
