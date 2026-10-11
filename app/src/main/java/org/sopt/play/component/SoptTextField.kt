@@ -92,10 +92,10 @@ fun SoptTextField(
         if (isError) { //에러일 때만 아래를 그림
             Spacer(modifier = Modifier.height(6.dp))  //입력칸과 에러 메시지 사이 6 띄우기
             Text(
+                modifier = Modifier.padding(start = 8.dp), //왼쪽 8 띄우기
                 text = errorMessage, //받아 온 에러 글자
                 style = M14,
                 color = Red,
-                modifier = Modifier.padding(start = 8.dp) //왼쪽 8 띄우기
             )
         }
 
