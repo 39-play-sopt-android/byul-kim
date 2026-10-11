@@ -1,10 +1,14 @@
 package org.sopt.play
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -18,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.component.PlaySoptTopBar
@@ -28,6 +34,13 @@ import org.sopt.play.ui.theme.White
 
 // 메뉴 탭 목록
 private val homeMenus = listOf("2배적립", "홈", "셀렉티드", "브랜드", "뷰티", "라이프", "랭킹")
+
+// 배너 이미지 목록
+private val bannerImages = listOf(
+    R.drawable.img_banner1,
+    R.drawable.img_banner2,
+    R.drawable.img_banner3,
+)
 
 // 홈 화면 (로그인 성공 후 도착하는 화면)
 @Composable
@@ -81,12 +94,22 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 }
             }
 
-            // 배너/제목/칩 자리
-            item(span = { GridItemSpan(maxLineSpan)}){
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "배너/제목/칩 자리"
-                )
+            // 배너 (가로 스크롤)
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(bannerImages) { image ->
+                        // bannerImages에서 그림 주소를 하나씩 꺼내서 image에 담음
+                        Image(
+                            painter = painterResource(image),    // 그 주소의 그림 불러오기
+                            contentDescription = null,           // 꾸밈용 사진이라 설명 없음
+                            contentScale = ContentScale.Crop,    // 칸에 꽉 채우고 넘치는 부분은 자르기
+                            modifier = Modifier.size(width = 328.dp, height = 195.dp),
+                        )
+                    }
+                }
             }
 
             // 한 칸씩 들어가는 항목 (2개씩 나란히)
