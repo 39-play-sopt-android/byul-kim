@@ -28,7 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.component.PlaySoptTopBar
 import org.sopt.play.component.TabMenuItem
+import org.sopt.play.ui.theme.Black
 import org.sopt.play.ui.theme.Gray2
+import org.sopt.play.ui.theme.M18
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.White
 
@@ -110,6 +112,24 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                         )
                     }
                 }
+            }
+
+            // 제목
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp, top = 20.dp),  // 왼쪽 16, 배너와 20 띄움
+                    text = "김솝트님을 위한 추천 아이템",
+                    style = M18,
+                    color = Black,
+                )
+            }
+
+            // 칩 자리
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = "칩 자리",
+                )
             }
 
             // 한 칸씩 들어가는 항목 (2개씩 나란히)
