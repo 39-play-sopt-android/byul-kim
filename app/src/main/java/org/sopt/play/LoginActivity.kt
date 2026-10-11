@@ -333,7 +333,7 @@ fun LoginTextField(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
     PlaySoptTheme {
         LoginScreen()
     }

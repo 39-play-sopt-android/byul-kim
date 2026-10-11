@@ -47,8 +47,8 @@ class RegisterActivity : ComponentActivity() { //RegisterActivity 화면 만들�
 
 @Composable
 fun RegisterScreen(
+    onRegisterClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
-    onRegisterClick: (String, String) -> Unit = { _, _ -> }
     //onRegisterClick 버튼 누르면 할 일을 밖에서 받음. (String, String) 이메일, 비밀번호 2개를 넘겨줌
     // -> Unit 돌려주는건 없음
     //= { _, _ -> } 는 기본값: 아무것도 안 함 (Preview용)
@@ -152,8 +152,8 @@ fun RegisterScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
+private fun RegisterScreenPreview() {
     PlaySoptTheme {
-        RegisterScreen()
+        RegisterScreen(onRegisterClick = { _, _ -> })
     }
 }
