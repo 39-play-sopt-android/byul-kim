@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import org.sopt.play.ui.theme.PlaySoptTheme
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import org.sopt.play.component.SoptTextField
 import org.sopt.play.ui.theme.B28
 import org.sopt.play.ui.theme.Black
 import org.sopt.play.ui.theme.Gray1
@@ -96,7 +97,7 @@ fun RegisterScreen(
         Spacer(modifier = Modifier.height(40.dp))
 
         //LoginTextField 재사용! (private 지워서 여기서도 쓸 수 있음)
-        LoginTextField(
+        SoptTextField(
             label = "이름",
             value = name,
             onValueChange = { name = it },
@@ -105,7 +106,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        LoginTextField(
+        SoptTextField(
             label = "이메일 주소",
             value = email,
             onValueChange = { email = it },
@@ -116,7 +117,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        LoginTextField(
+        SoptTextField(
             label = "비밀번호",
             value = password,
             onValueChange = { password = it },
@@ -128,7 +129,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        LoginTextField(
+        SoptTextField(
             label = "비밀번호 확인",
             value = passwordConfirm,
             onValueChange = { passwordConfirm = it },
