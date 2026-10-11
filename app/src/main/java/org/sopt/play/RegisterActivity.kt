@@ -19,6 +19,12 @@ import androidx.compose.ui.unit.dp
 import org.sopt.play.ui.theme.PlaySoptTheme
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import org.sopt.play.ui.theme.B28
+import org.sopt.play.ui.theme.Black
+import org.sopt.play.ui.theme.Gray1
+import org.sopt.play.ui.theme.Gray3
+import org.sopt.play.ui.theme.Sb14
+import org.sopt.play.ui.theme.White
 
 class RegisterActivity : ComponentActivity() { //RegisterActivity 화면 만들기
     override fun onCreate(savedInstanceState: Bundle?) {

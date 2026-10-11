@@ -38,64 +38,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-
-// ───── 피그마 색깔 ─────
-val Black = Color(0xFF121212)
-val Gray1 = Color(0xFFF7F7F7)
-val Gray2 = Color(0xFFD1D5D6)
-val Gray3 = Color(0xFFB2BABD)
-val Gray5 = Color(0xFF505559)
-val Gray6 = Color(0xFF23272A)
-val White = Color(0xFFFFFFFF)
-val Red = Color(0xFFFF4D4D)
-
-// ───── 피그마 글꼴 ─────
-val Pretendard = FontFamily(
-    Font(R.font.pretendard_bold, FontWeight.Bold),
-    Font(R.font.pretendard_semibold, FontWeight.SemiBold),
-    Font(R.font.pretendard_medium, FontWeight.Medium)
-)
-//R 프로젝트, res 폴더의 주소록
-
-val B28 = TextStyle(
-    fontFamily = Pretendard,
-    fontWeight = FontWeight.Bold,
-    fontSize = 28.sp,
-    lineHeight = 33.6.sp,
-    letterSpacing = (-0.28).sp //자간
-)
-
-val Sb16 = TextStyle(
-    fontFamily = Pretendard,
-    fontWeight = FontWeight.SemiBold,
-    fontSize = 16.sp,
-    lineHeight = 19.2.sp,
-    letterSpacing = (-0.16).sp
-)
-
-val M18 = TextStyle(
-    fontFamily = Pretendard,
-    fontWeight = FontWeight.Medium,
-    fontSize = 18.sp,
-    lineHeight = 21.6.sp,
-    letterSpacing = (-0.18).sp
-)
-
-val Sb14 = TextStyle(
-    fontFamily = Pretendard,
-    fontWeight = FontWeight.SemiBold,
-    fontSize = 14.sp,
-    lineHeight = 16.8.sp,
-    letterSpacing = (-0.14).sp
-)
-
-val M14 = TextStyle(
-    fontFamily = Pretendard,
-    fontWeight = FontWeight.Medium,
-    fontSize = 14.sp,
-    lineHeight = 16.8.sp,
-    letterSpacing = (-0.14).sp
-)
+import org.sopt.play.ui.theme.B28
+import org.sopt.play.ui.theme.Black
+import org.sopt.play.ui.theme.Gray1
+import org.sopt.play.ui.theme.Gray2
+import org.sopt.play.ui.theme.Gray3
+import org.sopt.play.ui.theme.Gray5
+import org.sopt.play.ui.theme.Gray6
+import org.sopt.play.ui.theme.M14
+import org.sopt.play.ui.theme.M18
+import org.sopt.play.ui.theme.Red
+import org.sopt.play.ui.theme.Sb14
+import org.sopt.play.ui.theme.Sb16
+import org.sopt.play.ui.theme.White
 
 class LoginActivity : ComponentActivity() {
     //LoginActivity 방 만들기 ComponentActivity 기능 사용
