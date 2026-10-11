@@ -26,7 +26,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import org.sopt.play.component.LoginTextField
+import org.sopt.play.component.SoptTextField
 import org.sopt.play.ui.theme.B28
 import org.sopt.play.ui.theme.Black
 import org.sopt.play.ui.theme.Gray1
@@ -118,7 +118,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(40.dp)) //높이 40짜리 빈 공간
 
         // 이메일 비밀번호 입력
-        LoginTextField(
+        SoptTextField(
             label = "이메일 주소", //위에 보일 이름
             value = email, // email 상자 안 값을 보여줌
             onValueChange = { email = it }, //글자 바뀌면 email 상자에 넣어
@@ -132,7 +132,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(32.dp)) //32 띄우기
 
-        LoginTextField(
+        SoptTextField(
             label = "비밀번호",
             value = password,
             onValueChange = { password = it },
@@ -165,7 +165,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             shape = CircleShape, //알약 모양
             colors = ButtonDefaults.buttonColors( //버튼 색 정하는 거
                 containerColor = Black, //활성일 때 배경 (검정)
-                contentColor = White, //활성일 때 안쪽 글자색 (흰색)
+                contentColor = Gray1, //활성일 때 안쪽 글자색
                 disabledContainerColor = Gray1, //비활성일 때 배경
                 disabledContentColor = Gray3 //비활성일 때 안쪽 글자색
             ),

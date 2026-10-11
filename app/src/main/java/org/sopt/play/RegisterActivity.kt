@@ -147,7 +147,7 @@ fun RegisterScreen(
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Black,
-                contentColor = White,
+                contentColor = Gray1,
                 disabledContainerColor = Gray1,
                 disabledContentColor = Gray3
             ),

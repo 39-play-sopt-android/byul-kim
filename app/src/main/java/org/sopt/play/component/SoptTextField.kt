@@ -66,7 +66,7 @@ fun SoptTextField(
             value = value, //입력칸에 이 값을 보여줘
             onValueChange = onValueChange, //글자가 바뀌면 이 일을 해
             singleLine = true, //최대 한 줄로만 노출
-            textStyle = M18.copy(color = Gray6), //M18을 복사하되, 색만 Gray6으로 바꾼 새 스타일 만들기
+            textStyle = M18.copy(color = Gray5), //M18을 복사하되, 색만 Gray5으로 바꾼 새 스타일 만들기
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             // 비밀번호 가리기
             //isPassword가 true → PasswordVisualTransformation() → •••
