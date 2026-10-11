@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.component.CategoryChip
 import org.sopt.play.component.PlaySoptTopBar
 import org.sopt.play.component.TabMenuItem
 import org.sopt.play.ui.theme.Black
@@ -44,12 +45,18 @@ private val bannerImages = listOf(
     R.drawable.img_banner3,
 )
 
+// 카테고리 칩 목록
+private val categories = listOf("전체", "상의", "팬츠", "원피스", "아우터", "스커트", "슈즈", "가방", "이너웨어/잠옷", "폰꾸미기")
+
 // 홈 화면 (로그인 성공 후 도착하는 화면)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
 
     // 지금 선택된 메뉴 이름 (처음엔 "홈")
     var selectedMenu by rememberSaveable { mutableStateOf("홈") }
+
+    // 지금 선택된 카테고리 이름 (처음엔 "전체")
+    var selectedCategory by rememberSaveable { mutableStateOf("전체") }
 
     // Scaffold = 화면 뼈대
     Scaffold(
@@ -124,12 +131,21 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 )
             }
 
-            // 칩 자리
+            // 카테고리 칩 (가로 스크롤)
             item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    text = "칩 자리",
-                )
+                LazyRow(
+                    modifier = Modifier.padding(top = 12.dp, bottom = 20.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    items(categories) { category ->
+                        CategoryChip(
+                            text = category,
+                            isSelected = category == selectedCategory,
+                            onClick = { selectedCategory = category },
+                        )
+                    }
+                }
             }
 
             // 한 칸씩 들어가는 항목 (2개씩 나란히)
