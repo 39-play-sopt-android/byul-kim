@@ -28,12 +28,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.component.CategoryChip
 import org.sopt.play.component.PlaySoptTopBar
+import org.sopt.play.component.ProductCard
 import org.sopt.play.component.TabMenuItem
 import org.sopt.play.ui.theme.Black
 import org.sopt.play.ui.theme.Gray2
 import org.sopt.play.ui.theme.M18
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.White
+import androidx.compose.foundation.lazy.grid.items
 
 // 메뉴 탭 목록
 private val homeMenus = listOf("2배적립", "홈", "셀렉티드", "브랜드", "뷰티", "라이프", "랭킹")
@@ -79,6 +81,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
             columns = GridCells.Fixed(2),
             // 한 줄에 몇 칸? → Fixed(2) = 무조건 2칸
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ){ // 이 안에서는 item { }, items { }로 항목을 등록함
 
             // 한 줄을 통째로 쓰는 항목
@@ -148,17 +151,10 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 }
             }
 
-            // 한 칸씩 들어가는 항목 (2개씩 나란히)
-            items(20){
-                // items(개수) = 똑같은 걸 20개 만들기 (테스트용)
-
-                Box(
-                    modifier = Modifier
-                        .padding(4.dp)        // 네모끼리 붙지 않게 4씩 띄우기
-                        .height(150.dp)       // 높이 150 (가로는 Grid가 알아서 반 칸으로 맞춰줌)
-                        .background(Gray2),   // 회색으로 칠해서 눈에 보이게
-
-                )
+            // 상품 카드 (2개씩 나란히)
+            items(productList) { product ->
+                // productList에서 상품을 하나씩 꺼내서 product에 담음
+                ProductCard(product = product)
             }
         }
 
