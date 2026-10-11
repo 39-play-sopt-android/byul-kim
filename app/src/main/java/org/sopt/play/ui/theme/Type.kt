@@ -39,7 +39,8 @@ val Typography = Typography(
 val Pretendard = FontFamily(
     Font(R.font.pretendard_bold, FontWeight.Bold),
     Font(R.font.pretendard_semibold, FontWeight.SemiBold),
-    Font(R.font.pretendard_medium, FontWeight.Medium)
+    Font(R.font.pretendard_medium, FontWeight.Medium),
+    Font(R.font.pretendard_regular, FontWeight.Normal),
 )
 
 val B28 = TextStyle(
@@ -80,4 +81,12 @@ val M14 = TextStyle(
     fontSize = 14.sp,
     lineHeight = 16.8.sp,
     letterSpacing = (-0.14).sp
+)
+
+val R14 = TextStyle(
+    fontFamily = Pretendard,
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    lineHeight = 16.8.sp,          // 행간 120% → 14 × 1.2
+    letterSpacing = (-0.14).sp,    // 자간 -1% → 14 × -0.01
 )
