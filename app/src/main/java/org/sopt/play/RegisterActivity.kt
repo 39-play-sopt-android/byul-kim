@@ -34,7 +34,9 @@ class RegisterActivity : ComponentActivity() { //RegisterActivity 화면 만들�
             PlaySoptTheme { //테마 입히고 흰 배경 뼈대 만듦
                 Scaffold(containerColor = White) { innerPadding ->
                     RegisterScreen(
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding),
                         onRegisterClick = { email, password ->
                             //회원가입 버튼을 누르면 여기가 실행됨
                             val resultIntent = Intent().apply { //빈 상자 만들기
