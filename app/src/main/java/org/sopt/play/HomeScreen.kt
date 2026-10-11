@@ -5,25 +5,36 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.component.PlaySoptTopBar
+import org.sopt.play.component.TabMenuItem
 import org.sopt.play.ui.theme.Gray2
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.White
 
+// 메뉴 탭 목록
+private val homeMenus = listOf("2배적립", "홈", "셀렉티드", "브랜드", "뷰티", "라이프", "랭킹")
+
 // 홈 화면 (로그인 성공 후 도착하는 화면)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
+
+    // 지금 선택된 메뉴 이름 (처음엔 "홈")
+    var selectedMenu by rememberSaveable { mutableStateOf("홈") }
 
     // Scaffold = 화면 뼈대
     Scaffold(
@@ -50,9 +61,31 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
             // 한 줄을 통째로 쓰는 항목
             item(span = { GridItemSpan(maxLineSpan)}){
+                // span = 이 항목이 몇 칸을 차지할지
+                // GridItemSpan(maxLineSpan) = 한 줄의 최대 칸 수만큼 = 2칸 전부 = 가로 꽉 차게
+
+                // 메뉴 탭
+                LazyRow{
+                    // LazyRow = 가로로 스크롤되는 리스트
+                    // 세로(Grid) 안에 가로(Row) → 방향이 달라서 겹쳐도 괜찮음
+
+                    items(homeMenus) {menu ->
+                        // homeMenus에서 메뉴 이름을 하나씩 꺼내서 menu에 담음
+
+                        TabMenuItem(
+                            text = menu,
+                            isSelected = menu == selectedMenu,  // 내 이름 == 선택된 이름이면 선택!
+                            onClick = { selectedMenu = menu },   // 누르면 선택된 이름을 내 이름으로 바꿈
+                        )
+                    }
+                }
+            }
+
+            // 배너/제목/칩 자리
+            item(span = { GridItemSpan(maxLineSpan)}){
                 Text(
                     modifier = Modifier.padding(16.dp),
-                    text = "메뉴/배너/제목/칩 자리" //임시
+                    text = "배너/제목/칩 자리"
                 )
             }
 
