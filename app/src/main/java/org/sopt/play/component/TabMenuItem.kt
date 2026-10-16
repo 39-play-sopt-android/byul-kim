@@ -62,14 +62,15 @@ fun TabMenuItem(
 
 
 
-
 @Preview(showBackground = true)
 @Composable
-private fun TabMenuItemPreview(){
+private fun TabMenuItemComparePreview() {
     PlaySoptTheme {
-        Row {
-            TabMenuItem(text = "홈", isSelected = true, onClick = {})
-            TabMenuItem(text = "브랜드", isSelected = false, onClick = {})
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            TabMenuItem(text = "메뉴", isSelected = true, onClick = {})
+            TabMenuItem(text = "메뉴", isSelected = false, onClick = {})
         }
     }
 }

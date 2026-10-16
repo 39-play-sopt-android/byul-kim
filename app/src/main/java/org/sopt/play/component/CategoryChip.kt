@@ -58,7 +58,7 @@ private fun CategoryChipPrview(){
     PlaySoptTheme{
         Row {
             CategoryChip(text = "전체", isSelected = true, onClick = {})
-            CategoryChip(text = "상의", isSelected = false, onClick = {})
+            CategoryChip(text = "전체", isSelected = false, onClick = {})
         }
     }
 }

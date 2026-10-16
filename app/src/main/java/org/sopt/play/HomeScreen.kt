@@ -3,6 +3,7 @@ package org.sopt.play
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -158,10 +159,39 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
 }
 
-@Preview(showBackground = true)
+// ✨ PR 캡처용: 메뉴 탭 한 줄 전체 미리보기
+@Preview(showBackground = true, widthDp = 600) // widthDp = 미리보기 폭 (잘리면 숫자 키우기)
 @Composable
-private fun HomeScreenPreview(){
+private fun MenusPreview() {
     PlaySoptTheme {
-        HomeScreen()
+        Row { // 탭들을 가로로 나란히
+            listOf("2배적립", "홈", "셀렉티드", "브랜드", "뷰티", "라이프", "랭킹").forEach { menu ->
+                TabMenuItem(
+                    text = menu,
+                    isSelected = menu == "홈", // "홈"만 선택된 모습
+                    onClick = {}
+                )
+            }
+        }
+    }
+}
+
+// ✨ PR 캡처용: 카테고리 칩 한 줄 전체 미리보기
+@Preview(showBackground = true, widthDp = 800)
+@Composable
+private fun CategoriesPreview() {
+    PlaySoptTheme {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), // 바깥 여백
+            horizontalArrangement = Arrangement.spacedBy(6.dp) // 칩 사이 간격
+        ) {
+            listOf("전체", "상의", "팬츠", "원피스", "아우터", "스커트", "슈즈", "가방").forEach { category ->
+                CategoryChip(
+                    text = category,
+                    isSelected = category == "전체", // "전체"만 선택된 모습
+                    onClick = {}
+                )
+            }
+        }
     }
 }
