@@ -37,7 +37,12 @@ import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.White
 
 // 메뉴 탭 목록
-private val homeMenus = listOf("2배적립", "홈", "셀렉티드", "브랜드", "뷰티", "라이프", "랭킹")
+// enum class = 정해진 값만 쓸 수 있는 목록
+// HOME = 코드에서 부르는 이름 / label("홈") = 화면에 보여줄 글자
+private enum class HomeMenu(val label: String) {
+    DOUBLE_POINT("2배적립"), HOME("홈"), SELECTED("셀렉티드"), BRAND("브랜드"),
+    BEAUTY("뷰티"), LIFE("라이프"), RANKING("랭킹"),
+}
 
 // 배너 이미지 목록
 private val bannerImages = listOf(
@@ -47,17 +52,21 @@ private val bannerImages = listOf(
 )
 
 // 카테고리 칩 목록
-private val categories = listOf("전체", "상의", "팬츠", "원피스", "아우터", "스커트", "슈즈", "가방", "이너웨어/잠옷", "폰꾸미기")
+private enum class ProductCategory(val label: String) {
+    ALL("전체"), TOP("상의"), PANTS("팬츠"), ONEPIECE("원피스"), OUTER("아우터"),
+    SKIRT("스커트"), SHOES("슈즈"), BAG("가방"), INNERWEAR("이너웨어/잠옷"), PHONE_DECO("폰꾸미기"),
+}
 
 // 홈 화면 (로그인 성공 후 도착하는 화면)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
 
-    // 지금 선택된 메뉴 이름 (처음엔 "홈")
-    var selectedMenu by rememberSaveable { mutableStateOf("홈") }
+    // 지금 선택된 메뉴 (처음엔 HOME)
+    // enum은 저장 가능한 타입이라 rememberSaveable에 그대로 넣어도 됨 → 화면 돌려도 선택 유지
+    var selectedMenu by rememberSaveable { mutableStateOf(HomeMenu.HOME) }
 
-    // 지금 선택된 카테고리 이름 (처음엔 "전체")
-    var selectedCategory by rememberSaveable { mutableStateOf("전체") }
+    // 지금 선택된 카테고리 (처음엔 ALL = 전체)
+    var selectedCategory by rememberSaveable { mutableStateOf(ProductCategory.ALL) }
 
     // Scaffold = 화면 뼈대
     Scaffold(
@@ -93,11 +102,12 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     // LazyRow = 가로로 스크롤되는 리스트
                     // 세로(Grid) 안에 가로(Row) → 방향이 달라서 겹쳐도 괜찮음
 
-                    items(homeMenus) {menu ->
-                        // homeMenus에서 메뉴 이름을 하나씩 꺼내서 menu에 담음
+                    items(HomeMenu.entries) { menu ->
+                        // HomeMenu.entries = enum 값 전체를 리스트로 (2배적립, 홈, 셀렉티드, ...)
+                        // 그중 하나씩 꺼내서 menu에 담음
 
                         TabMenuItem(
-                            text = menu,
+                            text = menu.label,
                             isSelected = menu == selectedMenu,  // 내 이름 == 선택된 이름이면 선택!
                             onClick = { selectedMenu = menu },   // 누르면 선택된 이름을 내 이름으로 바꿈
                         )
@@ -142,9 +152,9 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     contentPadding = PaddingValues(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    items(categories) { category ->
+                    items(ProductCategory.entries) { category ->
                         CategoryChip(
-                            text = category,
+                            text = category.label,
                             isSelected = category == selectedCategory,
                             onClick = { selectedCategory = category },
                         )

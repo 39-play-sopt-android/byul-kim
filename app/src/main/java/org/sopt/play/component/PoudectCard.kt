@@ -32,8 +32,8 @@ import org.sopt.play.ui.theme.Red
 // 상품 카드 하나
 @Composable
 fun ProductCard(
-    modifier: Modifier = Modifier,
     product: Product,              // 상품 정보 (사진, 브랜드, 이름, 할인율, 가격, 찜)
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) { // 사진 위, 글자 아래로 세로 배치
 
