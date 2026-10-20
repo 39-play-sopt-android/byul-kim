@@ -4,9 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -115,7 +117,9 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                             painter = painterResource(image),    // 그 주소의 그림 불러오기
                             contentDescription = null,           // 꾸밈용 사진이라 설명 없음
                             contentScale = ContentScale.Crop,    // 칸에 꽉 채우고 넘치는 부분은 자르기
-                            modifier = Modifier.size(width = 328.dp, height = 195.dp),
+                            modifier = Modifier
+                                .width(328.dp)
+                                .aspectRatio(328f / 195f),
                         )
                     }
                 }
@@ -124,7 +128,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             // 제목
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    modifier = Modifier.padding(start = 16.dp, top = 20.dp),  // 왼쪽 16, 배너와 20 띄움
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 20.dp),  // 좌우 16, 배너와 20 띄움
                     text = "김솝트님을 위한 추천 아이템",
                     style = M18,
                     color = Black,
@@ -156,7 +160,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         }
 
     }
-
 }
 
 // ✨ PR 캡처용: 메뉴 탭 한 줄 전체 미리보기

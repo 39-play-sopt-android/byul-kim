@@ -18,7 +18,6 @@ import org.sopt.play.R
 import org.sopt.play.ui.theme.PlaySoptTheme
 
 @Composable
-
 fun PlaySoptTopBar(modifier: Modifier = Modifier){
     Row( //가로로 나란히 배치
         modifier = modifier
