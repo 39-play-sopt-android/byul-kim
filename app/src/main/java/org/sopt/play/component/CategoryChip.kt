@@ -25,29 +25,24 @@ import org.sopt.play.ui.theme.White
 
 @Composable
 fun CategoryChip(
-    modifier: Modifier = Modifier,
     text: String,              // 칩 이름
     isSelected: Boolean,       // 선택됐는지 (밖에서 알려줌)
     onClick: () -> Unit,       // 눌렸을 때 할 일 (밖에서 정함)
+    modifier: Modifier = Modifier,
 ){
     val shape = RoundedCornerShape(6.dp)   // 모서리 둥글기 6
 
-    Box( // 글자 하나를 가운데 놓는 상자
+    Text(
+        text = text,
+        style = M14,
+        color = if (isSelected) White else Gray5,
         modifier = modifier
-            .height(32.dp)
             .clip(shape)
             .background(if (isSelected) Gray5 else White)
             .border(1.dp, if (isSelected) Gray5 else Gray2, shape)
             .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-        text = text,
-        style = M14,
-        color = if (isSelected) White else Gray5,
-        )
-    }
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+    )
 }
 
 
