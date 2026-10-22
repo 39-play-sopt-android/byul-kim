@@ -5,8 +5,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -125,14 +127,24 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 }
             }
 
+            // 배너 ↔ 제목 간격 20 (아이템 사이 간격은 Spacer가 담당)
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
             // 제목
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 20.dp),  // 좌우 16, 배너와 20 띄움
+                    modifier = Modifier.padding(horizontal = 16.dp),  // 좌우 여백만 (화면 가장자리와의 거리)
                     text = "김솝트님을 위한 추천 아이템",
                     style = M18,
                     color = Black,
                 )
+            }
+
+            // 제목 ↔ 칩 간격 12
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Spacer(modifier = Modifier.height(12.dp))
             }
 
             // 카테고리 칩 (아래에 따로 만든 CategoryChips 함수를 불러옴)
@@ -140,8 +152,12 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 CategoryChips(
                     selectedCategory = selectedCategory,
                     onCategoryClick = { selectedCategory = it },
-                    modifier = Modifier.padding(top = 12.dp, bottom = 20.dp),
                 )
+            }
+
+            // 칩 ↔ 상품 간격 20
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Spacer(modifier = Modifier.height(20.dp))
             }
 
             // 상품 카드 (2개씩 나란히)
