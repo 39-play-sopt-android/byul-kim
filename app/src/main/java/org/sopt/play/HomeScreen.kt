@@ -1,13 +1,13 @@
 package org.sopt.play
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -97,22 +98,11 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 // span = 이 항목이 몇 칸을 차지할지
                 // GridItemSpan(maxLineSpan) = 한 줄의 최대 칸 수만큼 = 2칸 전부 = 가로 꽉 차게
 
-                // 메뉴 탭
-                LazyRow{
-                    // LazyRow = 가로로 스크롤되는 리스트
-                    // 세로(Grid) 안에 가로(Row) → 방향이 달라서 겹쳐도 괜찮음
-
-                    items(HomeMenu.entries) { menu ->
-                        // HomeMenu.entries = enum 값 전체를 리스트로 (2배적립, 홈, 셀렉티드, ...)
-                        // 그중 하나씩 꺼내서 menu에 담음
-
-                        TabMenuItem(
-                            text = menu.label,
-                            isSelected = menu == selectedMenu,  // 내 이름 == 선택된 이름이면 선택!
-                            onClick = { selectedMenu = menu },   // 누르면 선택된 이름을 내 이름으로 바꿈
-                        )
-                    }
-                }
+                // 메뉴 탭 (아래에 따로 만든 HomeMenuTabs 함수를 불러옴)
+                HomeMenuTabs(
+                    selectedMenu = selectedMenu,           // 지금 선택된 메뉴를 알려줌
+                    onMenuClick = { selectedMenu = it },   // 눌리면 선택된 메뉴를 바꿈 (it = 눌린 메뉴)
+                )
             }
 
             // 배너 (가로 스크롤)
@@ -145,21 +135,13 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 )
             }
 
-            // 카테고리 칩 (가로 스크롤)
+            // 카테고리 칩 (아래에 따로 만든 CategoryChips 함수를 불러옴)
             item(span = { GridItemSpan(maxLineSpan) }) {
-                LazyRow(
+                CategoryChips(
+                    selectedCategory = selectedCategory,
+                    onCategoryClick = { selectedCategory = it },
                     modifier = Modifier.padding(top = 12.dp, bottom = 20.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    items(ProductCategory.entries) { category ->
-                        CategoryChip(
-                            text = category.label,
-                            isSelected = category == selectedCategory,
-                            onClick = { selectedCategory = category },
-                        )
-                    }
-                }
+                )
             }
 
             // 상품 카드 (2개씩 나란히)
@@ -172,39 +154,55 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     }
 }
 
-// ✨ PR 캡처용: 메뉴 탭 한 줄 전체 미리보기
-@Preview(showBackground = true, widthDp = 600) // widthDp = 미리보기 폭 (잘리면 숫자 키우기)
+// 메뉴 탭 한 줄 (홈 화면과 Preview에서 같이 씀)
+// 선택 상태는 HomeScreen이 갖고 있고, 여기엔 "선택된 값"과 "누르면 할 일"만 받아옴
 @Composable
-private fun MenusPreview() {
-    PlaySoptTheme {
-        Row { // 탭들을 가로로 나란히
-            listOf("2배적립", "홈", "셀렉티드", "브랜드", "뷰티", "라이프", "랭킹").forEach { menu ->
-                TabMenuItem(
-                    text = menu,
-                    isSelected = menu == "홈", // "홈"만 선택된 모습
-                    onClick = {}
-                )
-            }
+private fun HomeMenuTabs(
+    selectedMenu: HomeMenu,              // 지금 선택된 메뉴 (밖에서 알려줌)
+    onMenuClick: (HomeMenu) -> Unit,     // 메뉴 눌렀을 때 할 일 (밖에서 정함)
+    modifier: Modifier = Modifier,
+) {
+    // 탭 개수가 7개로 고정이라 Lazy 대신 Row + 가로 스크롤
+    // rememberScrollState() = 어디까지 스크롤했는지 기억
+    Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
+        HomeMenu.entries.forEach { menu ->
+            // HomeMenu.entries = enum 값 전체 (2배적립, 홈, 셀렉티드, ...) 를 하나씩 꺼냄
+            TabMenuItem(
+                text = menu.label,                   // 화면엔 "홈" 같은 글자
+                isSelected = menu == selectedMenu,   // 나 == 선택된 메뉴면 선택!
+                onClick = { onMenuClick(menu) },     // 눌린 메뉴를 밖(HomeScreen)으로 알려줌
+            )
         }
     }
 }
 
-// ✨ PR 캡처용: 카테고리 칩 한 줄 전체 미리보기
-@Preview(showBackground = true, widthDp = 800)
+// 카테고리 칩 한 줄 (칩은 10개라 LazyRow 유지)
 @Composable
-private fun CategoriesPreview() {
-    PlaySoptTheme {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), // 바깥 여백
-            horizontalArrangement = Arrangement.spacedBy(6.dp) // 칩 사이 간격
-        ) {
-            listOf("전체", "상의", "팬츠", "원피스", "아우터", "스커트", "슈즈", "가방").forEach { category ->
-                CategoryChip(
-                    text = category,
-                    isSelected = category == "전체", // "전체"만 선택된 모습
-                    onClick = {}
-                )
-            }
+private fun CategoryChips(
+    selectedCategory: ProductCategory,            // 지금 선택된 카테고리 (밖에서 알려줌)
+    onCategoryClick: (ProductCategory) -> Unit,   // 칩 눌렀을 때 할 일 (밖에서 정함)
+    modifier: Modifier = Modifier,
+) {
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        items(ProductCategory.entries) { category ->
+            CategoryChip(
+                text = category.label,                       // 화면엔 "전체" 같은 글자
+                isSelected = category == selectedCategory,   // 나 == 선택된 카테고리면 선택!
+                onClick = { onCategoryClick(category) },     // 눌린 칩을 밖으로 알려줌
+            )
         }
+    }
+}
+
+// 이 파일의 주인공(HomeScreen) 전체 미리보기
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    PlaySoptTheme {
+        HomeScreen()
     }
 }
