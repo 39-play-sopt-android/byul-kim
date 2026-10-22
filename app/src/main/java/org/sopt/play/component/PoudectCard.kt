@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -51,13 +52,15 @@ fun ProductCard(
                 modifier = Modifier.fillMaxSize(),
             )
 
-            // 하트 아이콘 (사진 위에 겹쳐서 오른쪽 아래에)
-            Image(
+            // Icon = 아이콘 전용 컴포넌트, tint로 색을 코드에서 입힐 수 있음
+            Icon(
                 painter = painterResource(
                     if (product.isFavorite) R.drawable.ic_favorite_fill else R.drawable.ic_favorite,
-                    // 찜했으면 빨간 꽉 찬 하트, 아니면 빈 하트
+                    // 찜했으면 꽉 찬 하트, 아니면 빈 하트
                 ),
                 contentDescription = if (product.isFavorite) "찜 해제" else "찜하기",
+                // 피그마: 찜 X = 흰 테두리, 찜 O = 빨간 하트
+                tint = if (product.isFavorite) PlaySoptTheme.colors.red else PlaySoptTheme.colors.white,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)   // Box 안에서 오른쪽 아래로
                     .padding(8.dp)
