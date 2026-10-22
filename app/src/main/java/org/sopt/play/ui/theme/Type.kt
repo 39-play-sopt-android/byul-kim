@@ -1,6 +1,8 @@
 package org.sopt.play.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +41,8 @@ val Typography = Typography(
 val Pretendard = FontFamily(
     Font(R.font.pretendard_bold, FontWeight.Bold),
     Font(R.font.pretendard_semibold, FontWeight.SemiBold),
-    Font(R.font.pretendard_medium, FontWeight.Medium)
+    Font(R.font.pretendard_medium, FontWeight.Medium),
+    Font(R.font.pretendard_regular, FontWeight.Normal),
 )
 
 val B28 = TextStyle(
@@ -79,5 +82,26 @@ val M14 = TextStyle(
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
     lineHeight = 16.8.sp,
-    letterSpacing = (-0.14).sp
+    letterSpacing = (-0.14).sp,
+    color = Black,   // 기본 글자색 검정
 )
+
+val R14 = TextStyle(
+    fontFamily = Pretendard,
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    lineHeight = 16.8.sp,          // 행간 120% → 14 × 1.2
+    letterSpacing = (-0.14).sp,    // 자간 -1% → 14 × -0.01
+)
+
+@Immutable
+data class PlaySoptTypography(
+    val b28: TextStyle = B28,
+    val sb16: TextStyle = Sb16,
+    val m18: TextStyle = M18,
+    val sb14: TextStyle = Sb14,
+    val m14: TextStyle = M14,
+    val r14: TextStyle = R14,
+)
+
+val LocalPlaySoptTypography = staticCompositionLocalOf { PlaySoptTypography() }

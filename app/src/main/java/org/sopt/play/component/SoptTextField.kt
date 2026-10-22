@@ -66,7 +66,8 @@ fun SoptTextField(
 
         Spacer(modifier = Modifier.height(6.dp)) //높이 6 띄우기
 
-        BasicTextField( //입력칸 본체
+        BasicTextField(
+            //입력칸 본체
             modifier = Modifier //입력칸 테두리, 여백 (밖에서 받은 게 아니라 새로 만드는 거라 대문자)
                 .fillMaxWidth() //너비 꽉 채우기
                 .onFocusChanged {
