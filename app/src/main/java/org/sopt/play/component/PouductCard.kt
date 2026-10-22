@@ -76,7 +76,7 @@ fun ProductCard(
             // 브랜드
             Text(
                 text = product.brand,
-                style = M14,
+                style = PlaySoptTheme.typography.m14,
                 color = Black,
                 maxLines = 1,                         // 최대 1줄
                 overflow = TextOverflow.Ellipsis,     // 넘치면 "…"으로
@@ -85,7 +85,7 @@ fun ProductCard(
             // 상품 이름
             Text(
                 text = product.name,
-                style = R14,                          // 아까 추가한 Regular 폰트!
+                style = PlaySoptTheme.typography.r14,                          // 아까 추가한 Regular 폰트!
                 color = Black,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -96,7 +96,7 @@ fun ProductCard(
                 Text(
                     text = "${product.discountRate}%",   // 36 → "36%"
                     style = M14,
-                    color = Red,
+                    color = PlaySoptTheme.colors.red,
                 )
                 Text(
                     text = "%,d".format(product.price),  // 28800 → "28,800" (세 자리마다 쉼표)

@@ -44,7 +44,7 @@ fun TabMenuItem(
             modifier = Modifier
                 .size(4.dp)
                 .background(
-                    color = if (isSelected) Black else Color.Transparent,
+                    color = if (isSelected) PlaySoptTheme.colors.black else Color.Transparent,
                     // 선택됐으면 검정, 아니면 투명 (안 보이지만 자리는 차지 → 글자 높이가 안 흔들림)
                     shape = CircleShape,   // 동그랗게
                 )
@@ -54,8 +54,8 @@ fun TabMenuItem(
 
         Text(
             text = text,
-            style = M18,
-            color = if (isSelected) Black else Gray3,  // 선택: 검정, 기본: 회색
+            style = PlaySoptTheme.typography.m18,
+            color = if (isSelected) PlaySoptTheme.colors.black else PlaySoptTheme.colors.gray3,  // 선택: 검정, 기본: 회색
         )
     }
 }

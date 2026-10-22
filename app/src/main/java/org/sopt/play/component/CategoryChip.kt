@@ -34,12 +34,12 @@ fun CategoryChip(
 
     Text(
         text = text,
-        style = M14,
-        color = if (isSelected) White else Gray5,
+        style = PlaySoptTheme.typography.m14,
+        color = if (isSelected) PlaySoptTheme.colors.white else PlaySoptTheme.colors.gray5,
         modifier = modifier
             .clip(shape)
-            .background(if (isSelected) Gray5 else White)
-            .border(1.dp, if (isSelected) Gray5 else Gray2, shape)
+            .background(if (isSelected) PlaySoptTheme.colors.gray5 else PlaySoptTheme.colors.white)
+            .border(1.dp, if (isSelected) PlaySoptTheme.colors.gray5 else PlaySoptTheme.colors.gray2, shape)
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 8.dp),
     )
@@ -48,7 +48,7 @@ fun CategoryChip(
 
 @Preview
 @Composable
-private fun CategoryChipPrview(){
+private fun CategoryChipPreview(){
     PlaySoptTheme{
         Row {
             CategoryChip(text = "전체", isSelected = true, onClick = {})

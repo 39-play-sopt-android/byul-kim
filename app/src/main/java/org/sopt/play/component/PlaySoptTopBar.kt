@@ -34,21 +34,15 @@ fun PlaySoptTopBar(modifier: Modifier = Modifier){
             color = PlaySoptTheme.colors.black,
         )
 
-        //오른쪽 검색 아이콘
+        // 오른쪽 검색 아이콘
+        // painterResource: res 폴더의 그림 파일을 불러오는 함수
         Icon(
             painter = painterResource(R.drawable.ic_search),
-            // painterResource: res 폴더의 그림 파일을 불러오는 함수
-            // R = res 폴더 주소록, R.drawable.ic_search = drawable 폴더의 ic_search.xml
-
-            contentDescription = "검색",
-            // 의미 있는 아이콘이면 설명을 쓰고, 그냥 꾸밈용이면 null
-
+            contentDescription = "검색", // 의미 있는 아이콘이라 설명을 씀 (꾸밈용이면 null)
             tint = PlaySoptTheme.colors.black,
-
             modifier = Modifier
-                .padding(10.dp)
-                .size(28.dp),
-                // 순서 중요! padding 먼저 → 바깥 여백
+                .padding(10.dp) // 순서 중요! padding 먼저 → 바깥 여백
+                .size(28.dp),   // 피그마 실제 사용 크기 28
         )
     }
 }

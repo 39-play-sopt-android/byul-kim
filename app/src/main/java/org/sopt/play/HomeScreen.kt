@@ -74,7 +74,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     // Scaffold = 화면 뼈대
     Scaffold(
         modifier = modifier,
-        containerColor = White,       // 화면 배경 흰색
+        containerColor = PlaySoptTheme.colors.white,       // 화면 배경 흰색
         topBar = { PlaySoptTopBar() },
         // topBar 자리에 넣은 건 스크롤해도 안 움직이고 위에 고정됨
         // 피그마 세로 스크롤 화면을 보면 PLAY SOPT만 고정이라서 여기에 넣음
@@ -137,7 +137,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 Text(
                     modifier = Modifier.padding(horizontal = 16.dp),  // 좌우 여백만 (화면 가장자리와의 거리)
                     text = "김솝트님을 위한 추천 아이템",
-                    style = M18,
+                    style = PlaySoptTheme.typography.m18,
                     color = Black,
                 )
             }
