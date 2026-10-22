@@ -15,7 +15,8 @@ val White = Color(0xFFFFFFFF)
 val Red = Color(0xFFFF4D4D)
 
 @Immutable //Compose에게 이 값은 안 바뀌어라고 알려줘서, 쓸데없이 화면을 다시 그리지 않게 함
-data class PlaySoptColors( //흩어져 있던 색들을 한 상자에 모은 것
+data class PlaySoptColors(
+    //흩어져 있던 색들을 한 상자에 모은 것
     val black: Color = Black,
     val gray1: Color = Gray1,
     val gray2: Color = Gray2,

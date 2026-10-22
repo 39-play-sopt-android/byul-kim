@@ -29,7 +29,7 @@ fun CategoryChip(
     isSelected: Boolean,       // 선택됐는지 (밖에서 알려줌)
     onClick: () -> Unit,       // 눌렸을 때 할 일 (밖에서 정함)
     modifier: Modifier = Modifier,
-){
+) {
     val shape = RoundedCornerShape(6.dp)   // 모서리 둥글기 6
 
     Text(
@@ -39,7 +39,11 @@ fun CategoryChip(
         modifier = modifier
             .clip(shape)
             .background(if (isSelected) PlaySoptTheme.colors.gray5 else PlaySoptTheme.colors.white)
-            .border(1.dp, if (isSelected) PlaySoptTheme.colors.gray5 else PlaySoptTheme.colors.gray2, shape)
+            .border(
+                1.dp,
+                if (isSelected) PlaySoptTheme.colors.gray5 else PlaySoptTheme.colors.gray2,
+                shape
+            )
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 8.dp),
     )
@@ -48,8 +52,8 @@ fun CategoryChip(
 
 @Preview
 @Composable
-private fun CategoryChipPreview(){
-    PlaySoptTheme{
+private fun CategoryChipPreview() {
+    PlaySoptTheme {
         Row {
             CategoryChip(text = "전체", isSelected = true, onClick = {})
             CategoryChip(text = "전체", isSelected = false, onClick = {})

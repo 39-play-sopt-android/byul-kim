@@ -18,12 +18,13 @@ import org.sopt.play.R
 import org.sopt.play.ui.theme.PlaySoptTheme
 
 @Composable
-fun PlaySoptTopBar(modifier: Modifier = Modifier){
-    Row( //가로로 나란히 배치
+fun PlaySoptTopBar(modifier: Modifier = Modifier) {
+    Row(
+        //가로로 나란히 배치
         modifier = modifier
             .fillMaxWidth() //가로로 꽉 채우기
             .background(PlaySoptTheme.colors.white) //배경 흰색
-            .padding(start = 16.dp, end = 6.dp) , //여백
+            .padding(start = 16.dp, end = 6.dp), //여백
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,      // 글자랑 아이콘 세로 가운데 맞추기
     ) {
@@ -48,7 +49,7 @@ fun PlaySoptTopBar(modifier: Modifier = Modifier){
 
 @Preview(showBackground = true)
 @Composable
-private fun PlaySoptTopBarPreview(){
+private fun PlaySoptTopBarPreview() {
     PlaySoptTheme { // 앱 테마 입히기
         PlaySoptTopBar() // 탑바 그리기
     }

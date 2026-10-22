@@ -34,10 +34,7 @@ import org.sopt.play.component.CategoryChip
 import org.sopt.play.component.PlaySoptTopBar
 import org.sopt.play.component.ProductCard
 import org.sopt.play.component.TabMenuItem
-import org.sopt.play.ui.theme.Black
-import org.sopt.play.ui.theme.M18
 import org.sopt.play.ui.theme.PlaySoptTheme
-import org.sopt.play.ui.theme.White
 
 // 메뉴 탭 목록
 // enum class = 정해진 값만 쓸 수 있는 목록
@@ -63,7 +60,6 @@ private enum class ProductCategory(val label: String) {
 // 홈 화면 (로그인 성공 후 도착하는 화면)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-
     // 지금 선택된 메뉴 (처음엔 HOME)
     // enum은 저장 가능한 타입이라 rememberSaveable에 그대로 넣어도 됨 → 화면 돌려도 선택 유지
     var selectedMenu by rememberSaveable { mutableStateOf(HomeMenu.HOME) }
@@ -78,7 +74,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         topBar = { PlaySoptTopBar() },
         // topBar 자리에 넣은 건 스크롤해도 안 움직이고 위에 고정됨
         // 피그마 세로 스크롤 화면을 보면 PLAY SOPT만 고정이라서 여기에 넣음
-    ){innerPadding ->
+    ) { innerPadding ->
         // innerPadding = Scaffold가 계산해서 주는 여백
         // 여기서는 탑바 높이만큼 → 이만큼 안 띄우면 내용이 탑바 밑에 깔려서 가려짐
 
@@ -93,13 +89,12 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             columns = GridCells.Fixed(2),
             // 한 줄에 몇 칸? → Fixed(2) = 무조건 2칸
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ){ // 이 안에서는 item { }, items { }로 항목을 등록함
+        ) { // 이 안에서는 item { }, items { }로 항목을 등록함
 
             // 한 줄을 통째로 쓰는 항목
-            item(span = { GridItemSpan(maxLineSpan)}){
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 // span = 이 항목이 몇 칸을 차지할지
                 // GridItemSpan(maxLineSpan) = 한 줄의 최대 칸 수만큼 = 2칸 전부 = 가로 꽉 차게
-
                 // 메뉴 탭 (아래에 따로 만든 HomeMenuTabs 함수를 불러옴)
                 HomeMenuTabs(
                     selectedMenu = selectedMenu,           // 지금 선택된 메뉴를 알려줌

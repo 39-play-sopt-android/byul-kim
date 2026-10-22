@@ -34,7 +34,8 @@ fun PlaySoptTheme(
         else -> LightColorScheme
     }
 
-    CompositionLocalProvider( //만든 색·글꼴 상자를 아래 화면 전체에 내려주는 부분
+    CompositionLocalProvider(
+        //만든 색·글꼴 상자를 아래 화면 전체에 내려주는 부분
         LocalPlaySoptColors provides PlaySoptColors(),
         LocalPlaySoptTypography provides PlaySoptTypography(),
     ) {

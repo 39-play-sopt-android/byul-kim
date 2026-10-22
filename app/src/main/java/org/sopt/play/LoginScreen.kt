@@ -38,7 +38,9 @@ import org.sopt.play.ui.theme.Gray6
 import org.sopt.play.ui.theme.M14
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.Sb14
+
 //Ctrl + Alt + o 누르면 자동 정리
+//Ctrl + Alt + L 으로 자동 정렬
 
 @Composable //@Composable: 화면 그리는 함수 표시
 fun LoginScreen(
@@ -46,7 +48,8 @@ fun LoginScreen(
     registeredPassword: String,    // 회원가입한 비밀번호 (밖에서 받음)
     onLoginSuccess: () -> Unit,    // 로그인 성공하면 할 일 (밖에서 정함)
     onRegisterClick: () -> Unit,   // 회원가입하기 누르면 할 일 (밖에서 정함)
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     //modifier: Modifier = Modifier: 밖에서 꾸밈을 받고, 안 주면 빈 꾸밈
     var email by remember { mutableStateOf("") } //var는 바뀌는 상자
     var password by remember { mutableStateOf("") }
@@ -68,7 +71,8 @@ fun LoginScreen(
     //뭔가 쳤는데 그리고 6글자보다 적으면 → 에러(true)
     //password.length 글자 수 (•••로 가려져도 진짜 글자 수로 셈)
 
-    val isLoginEnabled = email.isNotEmpty() && password.isNotEmpty() && !isEmailError && !isPasswordError
+    val isLoginEnabled =
+        email.isNotEmpty() && password.isNotEmpty() && !isEmailError && !isPasswordError
     //이메일 칸 비어있지 않고 && 비밀번호 칸 비어있지 않고 && 이메일 에러 아니고 && 비밀번호 에러 아니면 → true (버튼 켜짐)
     //하나라도 아니면 → false (버튼 꺼짐)
 
