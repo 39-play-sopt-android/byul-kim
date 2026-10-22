@@ -82,7 +82,8 @@ val M14 = TextStyle(
     fontWeight = FontWeight.Medium,
     fontSize = 14.sp,
     lineHeight = 16.8.sp,
-    letterSpacing = (-0.14).sp
+    letterSpacing = (-0.14).sp,
+    color = Black,   // 기본 글자색 검정
 )
 
 val R14 = TextStyle(

@@ -138,7 +138,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(horizontal = 16.dp),  // 좌우 여백만 (화면 가장자리와의 거리)
                     text = "김솝트님을 위한 추천 아이템",
                     style = PlaySoptTheme.typography.m18,
-                    color = Black,
                 )
             }
 

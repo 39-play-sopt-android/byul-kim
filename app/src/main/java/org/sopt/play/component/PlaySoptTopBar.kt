@@ -31,7 +31,6 @@ fun PlaySoptTopBar(modifier: Modifier = Modifier){
         Text(
             text = "PLAY SOPT",
             style = PlaySoptTheme.typography.b28,
-            color = PlaySoptTheme.colors.black,
         )
 
         // 오른쪽 검색 아이콘
