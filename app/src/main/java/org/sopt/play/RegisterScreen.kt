@@ -1,6 +1,6 @@
 package org.sopt.play
 
-import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,13 +16,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.play.component.SoptTextField
 import org.sopt.play.ui.theme.B28
 import org.sopt.play.ui.theme.Black
@@ -34,28 +35,34 @@ import org.sopt.play.ui.theme.Sb14
 @Composable
 fun RegisterScreen(
     onRegisterClick: (String, String) -> Unit,
-    modifier: Modifier = Modifier,
-    //onRegisterClick 버튼 누르면 할 일을 밖에서 받음. (String, String) 이메일, 비밀번호 2개를 넘겨줌
+    //onRegisterClick 가입 완료되면 할 일을 밖에서 받음. (String, String) 이메일, 비밀번호 2개를 넘겨줌
     // -> Unit 돌려주는건 없음
-    //= { _, _ -> } 는 기본값: 아무것도 안 함 (Preview용)
+    modifier: Modifier = Modifier,
+    viewModel: RegisterViewModel = viewModel(),
+    // ViewModelProvider를 통해 RegisterViewModel 받아오기 (직접 생성 X)
 ) {
-    var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordConfirm by rememberSaveable { mutableStateOf("") }
-    //입력값 상자 4개 (이름, 이메일, 비밀번호, 비밀번호 확인)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // uiState 구독 → 값 바뀌면 리컴포지션
+    // rememberSaveable 4개를 대신함 (ViewModel이 화면 회전에도 상태 유지해줌)
 
-    val isEmailError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    val isPasswordError = password.isNotEmpty() && password.length < 6
-    //로그인이랑 똑같음 쳤는데 이메일 모양 아니면 에러, 6글자보다 적으면 에러
+    val context = LocalContext.current // 토스트에 필요
 
-    val isPasswordConfirmError = passwordConfirm.isNotEmpty() && passwordConfirm != password
-    //쳤는데 비밀번호랑 다르면 에러
+    LaunchedEffect(Unit) {
+        // 컴포지션될 때 한 번 시작해서 sideEffect 구독
+        viewModel.sideEffect.collect { sideEffect ->
+            when (sideEffect) {
+                is RegisterSideEffect.ShowToast -> {
+                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+                }
 
-    val isRegisterEnabled = name.isNotEmpty() &&
-            email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty() &&
-            !isEmailError && !isPasswordError && !isPasswordConfirmError
-    //4칸 다 쳤고 && 에러가 하나도 없으면 → 버튼 켜짐
+                is RegisterSideEffect.NavigateToLogin -> {
+                    onRegisterClick(sideEffect.email, sideEffect.password)
+                    // 밖(NavHost)에 가입 정보 전달 → NavHost가 저장하고 popBackStack
+                    // 둘 다 data class라서 is로 타입 확인 후 안의 값 꺼냄
+                }
+            }
+        }
+    }
 
     Column( //세로 배치
         modifier = modifier
@@ -73,11 +80,10 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        //LoginTextField 재사용! (private 지워서 여기서도 쓸 수 있음)
         SoptTextField(
             label = "이름",
-            value = name,
-            onValueChange = { name = it },
+            value = uiState.name, // uiState에서 가져옴
+            onValueChange = viewModel::onNameChange, // ViewModel 함수 호출
             placeholder = "홍길동"
         )
 
@@ -85,10 +91,10 @@ fun RegisterScreen(
 
         SoptTextField(
             label = "이메일 주소",
-            value = email,
-            onValueChange = { email = it },
+            value = uiState.email,
+            onValueChange = viewModel::onEmailChange,
             placeholder = "abc@email.com",
-            isError = isEmailError,
+            isError = uiState.isEmailError,
             errorMessage = "올바른 이메일을 입력해주세요."
         )
 
@@ -96,11 +102,11 @@ fun RegisterScreen(
 
         SoptTextField(
             label = "비밀번호",
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = viewModel::onPasswordChange,
             placeholder = "6자 이상의 비밀번호",
             isPassword = true,
-            isError = isPasswordError,
+            isError = uiState.isPasswordError,
             errorMessage = "비밀번호는 6자 이상 입력해주세요."
         )
 
@@ -108,19 +114,21 @@ fun RegisterScreen(
 
         SoptTextField(
             label = "비밀번호 확인",
-            value = passwordConfirm,
-            onValueChange = { passwordConfirm = it },
+            value = uiState.passwordConfirm,
+            onValueChange = viewModel::onPasswordConfirmChange,
             placeholder = "6자 이상의 비밀번호",
             isPassword = true,
-            isError = isPasswordConfirmError,
+            isError = uiState.isPasswordConfirmError,
             errorMessage = "비밀번호와 동일하게 입력해주세요."
         )
 
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(
-            onClick = { onRegisterClick(email, password) }, //입력한 이메일 , 비밀번호를 밖으로 넘김
-            enabled = isRegisterEnabled, //조건이 맞으면 켜짐
+            onClick = viewModel::onRegisterClick,
+            // ViewModel에 클릭 이벤트 전달 (onRegisterClick(email, password) 직접 호출)
+            // 매개변수 없는 함수라서 { viewModel.onRegisterClick() } 대신 함수 참조로 바로 넘김
+            enabled = uiState.isRegisterEnabled, // uiState에서 가져옴
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Black,
