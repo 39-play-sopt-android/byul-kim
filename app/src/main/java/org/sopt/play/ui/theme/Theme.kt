@@ -9,6 +9,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme()
@@ -32,9 +34,22 @@ fun PlaySoptTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(
+        //만든 색·글꼴 상자를 아래 화면 전체에 내려주는 부분
+        LocalPlaySoptColors provides PlaySoptColors(),
+        LocalPlaySoptTypography provides PlaySoptTypography(),
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content,
+        )
+    }
+}
+
+object PlaySoptTheme { //바로가기 느낌?
+    val colors: PlaySoptColors
+        @Composable @ReadOnlyComposable get() = LocalPlaySoptColors.current
+    val typography: PlaySoptTypography
+        @Composable @ReadOnlyComposable get() = LocalPlaySoptTypography.current
 }
