@@ -16,6 +16,7 @@ data class HomeUiState(
 class HomeViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
+
     // 수정 가능한 상태 (ViewModel 내부에서만 변경)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     // Screen에는 읽기 전용으로 공개
@@ -42,5 +43,25 @@ class HomeViewModel : ViewModel() {
     fun onCategoryClick(category: ProductCategory) {
         _uiState.update { it.copy(selectedCategory = category) }
         // 현재 상태 복사 + selectedCategory만 클릭된 카테고리로 교체
+    }
+
+    //하트 클릭 -> 해당 상품의 좋아요 상태 반전
+    fun onFavoriteClick(productId: Int) {
+        _uiState.update { state ->
+            // state = 현재 HomeUiState (it 대신 이름 붙임 → 안에서 product랑 헷갈리지 않게)
+            state.copy(
+                products = state.products.map { product ->
+                    // map = 리스트를 하나씩 돌면서 변환한 새 리스트를 만듦 (원본 리스트는 안 바뀜)
+                    if (product.id == productId) {
+                        product.copy(isFavorite = !product.isFavorite)
+                        // 클릭된 상품 → isFavorite만 반대로 바꾼 새 Product
+                    } else {
+                        product
+                        // 나머지 상품 -> 그대로
+                    }
+
+                }
+            )
+        }
     }
 }

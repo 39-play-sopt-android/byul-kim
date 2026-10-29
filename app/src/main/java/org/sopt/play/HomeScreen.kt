@@ -151,9 +151,17 @@ fun HomeScreen(
             }
 
             // 상품 카드 (2개씩 나란히)
-            items(uiState.products) { product ->
-                // 전역 productList 대신 uiState의 products 사용
-                ProductCard(product = product)
+            items(
+                items = uiState.products,
+                key = { product -> product.id },
+                // 각 아이템의 고유 key = 상품 id
+
+            ) { product ->
+                ProductCard(
+                    product = product,
+                    onFavoriteClick = { viewModel.onFavoriteClick(product.id) },
+                    // 하트 클릭 → ViewModel에 이 id 상품 좋아요 눌렸어 전달
+                )
             }
         }
     }

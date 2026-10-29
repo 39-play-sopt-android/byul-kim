@@ -1,6 +1,7 @@
 package org.sopt.play.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,16 +25,14 @@ import androidx.compose.ui.unit.dp
 import org.sopt.play.Product
 import org.sopt.play.R
 import org.sopt.play.productList
-import org.sopt.play.ui.theme.Black
 import org.sopt.play.ui.theme.M14
 import org.sopt.play.ui.theme.PlaySoptTheme
-import org.sopt.play.ui.theme.R14
-import org.sopt.play.ui.theme.Red
 
 // 상품 카드 하나
 @Composable
 fun ProductCard(
     product: Product,              // 상품 정보 (사진, 브랜드, 이름, 할인율, 가격, 찜)
+    onFavoriteClick: () -> Unit, //하트 눌렀을 때 할 일
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) { // 사진 위, 글자 아래로 세로 배치
@@ -63,6 +62,8 @@ fun ProductCard(
                 tint = if (product.isFavorite) PlaySoptTheme.colors.red else PlaySoptTheme.colors.white,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)   // Box 안에서 오른쪽 아래로
+                    .clickable(onClick = onFavoriteClick)
+                    // 하트 클릭 → 밖으로 알림 (상태는 직접 안 바꿈)
                     .padding(8.dp)
                     .size(24.dp),
             )
@@ -111,8 +112,16 @@ fun ProductCard(
 private fun ProductCardPreview() {
     PlaySoptTheme {
         Row {
-            ProductCard(product = productList[1], modifier = Modifier.width(176.dp))   // 찜 O, 이름 김
-            ProductCard(product = productList[2], modifier = Modifier.width(176.dp))   // 찜 X, 이름 짧음
+            ProductCard(
+                product = productList[1],
+                onFavoriteClick = {},
+                modifier = Modifier.width(176.dp)
+            )   // 찜 O, 이름 김
+            ProductCard(
+                product = productList[2],
+                onFavoriteClick = {},
+                modifier = Modifier.width(176.dp)
+            )   // 찜 X, 이름 짧음
         }
     }
 }
