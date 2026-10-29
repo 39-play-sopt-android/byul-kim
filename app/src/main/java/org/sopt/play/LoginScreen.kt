@@ -1,6 +1,5 @@
 package org.sopt.play
 
-import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,15 +19,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.play.component.SoptTextField
 import org.sopt.play.ui.theme.B28
 import org.sopt.play.ui.theme.Black
@@ -44,41 +43,44 @@ import org.sopt.play.ui.theme.Sb14
 
 @Composable //@Composable: 화면 그리는 함수 표시
 fun LoginScreen(
-    registeredEmail: String,       // 회원가입한 이메일 (밖에서 받음)
-    registeredPassword: String,    // 회원가입한 비밀번호 (밖에서 받음)
-    onLoginSuccess: () -> Unit,    // 로그인 성공하면 할 일 (밖에서 정함)
-    onRegisterClick: () -> Unit,   // 회원가입하기 누르면 할 일 (밖에서 정함)
-    modifier: Modifier = Modifier
+    registeredEmail: String, // 회원가입한 이메일 (밖에서 받음)
+    registeredPassword: String, // 회원가입한 비밀번호 (밖에서 받음)
+    onLoginSuccess: () -> Unit, // 로그인 성공하면 할 일 (밖에서 정함)
+    onRegisterClick: () -> Unit, // 회원가입하기 누르면 할 일 (밖에서 정함)
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = viewModel(),
+    // 이 화면에서 쓸 ViewModel
+    // viewModel() = ViewModelProvider를 통해 LoginViewModel 인스턴스를 받아오는 함수
+    // 이미 만들어진 게 있으면 그걸 주고, 없으면 새로 만들어줌 → 화면 회전해도 같은 ViewModel 유지
 ) {
-    //modifier: Modifier = Modifier: 밖에서 꾸밈을 받고, 안 주면 빈 꾸밈
-    var email by remember { mutableStateOf("") } //var는 바뀌는 상자
-    var password by remember { mutableStateOf("") }
-    //email, password는 상자 이름
-    //mutableStateOf("") 처음 값은 빈 글자고 값이 바뀌면 Compose가 화면을 다시 그림
-    //remember { } 다시 그려도 값을 잊지 않음
-    //by는 email.value 대신 그냥 email로 쓰게 해줌
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    // ViewModel의 uiState(StateFlow)를 구독해서 Compose State로 바꿈
+    // uiState 값이 바뀔 때마다 리컴포지션 → 화면 다시 그림
+    // collectAsStateWithLifecycle = 앱이 백그라운드로 가면 구독을 멈추고, 돌아오면 다시 구독
+    // by = uiState.value 대신 uiState로 바로 쓰게 해줌
 
-    val context = LocalContext.current //지금 화면 정보 (화면 이동, 토스트에 필요)
+    val context = LocalContext.current //지금 화면 정보 (토스트에 필요)
 
-
-    val isEmailError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    //뭔가 쳤는데(isNotEmpty) 그리고(&&) 이메일 모양이 아니면(!~matches) → 에러(true)
-    //isNotEmpty() 비어 있지 않으면 true → 아무것도 안 쳤을 땐 에러 안 띄우려고
-    //Patterns.EMAIL_ADDRESS.matcher(email).matches() email이 이메일 모양이면 true
-    //! 는 반대로 뒤집기 (true ↔ false)
-
-    val isPasswordError = password.isNotEmpty() && password.length < 6
-    //뭔가 쳤는데 그리고 6글자보다 적으면 → 에러(true)
-    //password.length 글자 수 (•••로 가려져도 진짜 글자 수로 셈)
-
-    val isLoginEnabled =
-        email.isNotEmpty() && password.isNotEmpty() && !isEmailError && !isPasswordError
-    //이메일 칸 비어있지 않고 && 비밀번호 칸 비어있지 않고 && 이메일 에러 아니고 && 비밀번호 에러 아니면 → true (버튼 켜짐)
-    //하나라도 아니면 → false (버튼 꺼짐)
+    LaunchedEffect(Unit) {
+        // 화면이 처음 그려질 때 딱 한 번 실행되는 코루틴
+        // key가 Unit(안 바뀌는 값)이라서 화면이 살아있는 동안 재시작 안 됨
+        viewModel.sideEffect.collect { sideEffect ->
+            // ViewModel이 emit한 sideEffect(SharedFlow)를 구독
+            when (sideEffect) {
+                // sealed interface라서 종류가 정해져 있음 → 하나라도 빠뜨리면 컴파일 에러
+                LoginSideEffect.NavigateToHome -> onLoginSuccess()
+                // 홈 이동 → 밖(NavHost)에 성공 알리기 → NavHost가 Home으로 navigate
+                is LoginSideEffect.ShowToast -> {
+                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+                    // 토스트 → context는 Screen에만 있어서 Screen에서 띄움
+                    // is = 이 종류야? 확인 → ShowToast는 class라서 is로 확인해야 message를 꺼낼 수 있음
+                }
+            }
+        }
+    }
 
     Column( //전체 세로 배치
         modifier = modifier
-            //modifier (소문자) 받아 온 꾸밈(상태바 여백)부터 적용? 이거 대문자 소문자가 헷갈려요....
             .fillMaxSize() //화면 전체 크기
             .imePadding() //키보드가 올라오면 그만큼 밀어 올리기
             .verticalScroll(rememberScrollState()) //세로 스크롤 가능하게
@@ -97,25 +99,26 @@ fun LoginScreen(
         // 이메일 비밀번호 입력
         SoptTextField(
             label = "이메일 주소", //위에 보일 이름
-            value = email, // email 상자 안 값을 보여줌
-            onValueChange = { email = it }, //글자 바뀌면 email 상자에 넣어
-            //it은 사용자가 방금 친 결과 글자 그걸 이메일 안에 넣으라는 거
-            //onValueChange = { newText -> email = newText } 이렇게 써도 된다는데 어떤걸로 쓰는게 더 좋을까요
+            value = uiState.email,
+            // uiState의 email 표시
+            onValueChange = viewModel::onEmailChange,
+            // 입력 바뀌면 ViewModel 함수 호출
+            // viewModel::onEmailChange = { viewModel.onEmailChange(it) } 를 줄인 함수 참조
             placeholder = "abc@email.com", //안내 글자
-            isError = isEmailError, //에러인지 알려줌
+            isError = uiState.isEmailError,
+            // 에러 여부도 uiState에서 가져옴 (계산은 LoginUiState의 get()이 함)
             errorMessage = "올바른 이메일을 입력해주세요." //에러일 때 보일 빨간 글자
-
         )
 
         Spacer(modifier = Modifier.height(32.dp)) //32 띄우기
 
         SoptTextField(
             label = "비밀번호",
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password, // uiState의 password 표시
+            onValueChange = viewModel::onPasswordChange, // ViewModel 함수 호출
             placeholder = "6자 이상의 비밀번호",
             isPassword = true, //비밀번호 적으면 가려줘
-            isError = isPasswordError, //에러인지 알려줌
+            isError = uiState.isPasswordError, // uiState에서 가져옴
             errorMessage = "비밀번호는 6자 이상 입력해주세요." //에러일 때 보일 빨간 글자
         )
 
@@ -123,16 +126,14 @@ fun LoginScreen(
 
         // 로그인 버튼
         Button(
-            onClick = { //누르면 할 일
-                if (registeredEmail.isNotEmpty() && email == registeredEmail && password == registeredPassword) {
-                    //회원가입한 적 있고 && 이메일 같고 && 비밀번호 같으면 → 로그인 성공
-                    onLoginSuccess()   // "로그인 성공했어!" 하고 밖에 알리기
-                } else {
-                    //하나라도 다르면 → 실패 토스트
-                    Toast.makeText(context, "이메일 또는 비밀번호가 올바르지 않아요.", Toast.LENGTH_SHORT).show()
-                } //LENGTH_SHORT → 약 2초 .show() → 보여주기
+            onClick = {
+                viewModel.onLoginClick(registeredEmail, registeredPassword)
+                // 로그인 판단은 ViewModel에 맡김
+                // 성공/실패 판단 + sideEffect emit은 ViewModel이 하고, Screen은 위 LaunchedEffect에서 처리
+
             },
-            enabled = isLoginEnabled, //조건 맞으면 켜짐, 아니면 꺼짐
+            enabled = uiState.isLoginEnabled,
+            // 버튼 활성화 여부도 uiState에서 가져옴
             shape = CircleShape, //알약 모양
             colors = ButtonDefaults.buttonColors( //버튼 색 정하는 거
                 containerColor = Black, //활성일 때 배경 (검정)
@@ -150,17 +151,16 @@ fun LoginScreen(
 
         // 회원가입 안내
         Row( //가로로 놓기
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            //horizontalArrangement 가로 방향으로 배치
-            //spaced~ 사이사이 12 띄워
-            modifier = Modifier.align(Alignment.CenterHorizontally) //얘만 가운데 정령
-        ) { // Modifier.align 나 하나만 정렬할게! 이런 느낌 align은 Column 안에서만 사용 가능
+            horizontalArrangement = Arrangement.spacedBy(12.dp), //사이사이 12 띄워
+            modifier = Modifier.align(Alignment.CenterHorizontally) //얘만 가운데 정렬 (align은 Column 안에서만 사용 가능)
+        ) {
             Text(text = "아직 계정이 없으신가요?", style = M14, color = Gray3)
             Text(
                 text = "회원가입하기",
                 style = M14,
                 color = Gray6,
-                modifier = Modifier.clickable { onRegisterClick() }   // "회원가입 눌렸어!" 하고 밖에 알리기
+                modifier = Modifier.clickable { onRegisterClick() } // "회원가입 눌렸어!" 하고 밖에 알리기
+                // 상태 변경 없이 화면 이동만 하는 거라 ViewModel 안 거치고 그대로 둠
             )
         }
     }
@@ -175,6 +175,7 @@ private fun LoginScreenPreview() {
             registeredPassword = "",
             onLoginSuccess = {},
             onRegisterClick = {},
+            // viewModel은 기본값(viewModel())이 있어서 안 넣어도 됨
         )
     }
 }
