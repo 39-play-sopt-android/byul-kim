@@ -15,14 +15,14 @@ import org.sopt.play.ui.theme.White
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // 상태바, 네비게이션바 영역까지 화면 꽉 채우기
+        enableEdgeToEdge()
         setContent {
             PlaySoptTheme {
                 Scaffold(containerColor = White) { innerPadding ->
                     MainNavHost(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .consumeWindowInsets(innerPadding), // 키보드 중복 패딩 방지
+                            .consumeWindowInsets(innerPadding),
                     )
                 }
             }
