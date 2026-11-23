@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 // 홈은 토스트/화면 이동(SideEffect)이 없어서 상태 구독 + 함수 연결만 함
 @Composable
 fun HomeRoute(
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
     // ViewModelProvider를 통해 HomeViewModel 받아오기 (직접 생성 X)
@@ -21,9 +22,8 @@ fun HomeRoute(
         uiState = uiState, // 화면에 그릴 상태
         onMenuClick = viewModel::onMenuClick, // 메뉴 탭 누르면 ViewModel 함수 호출
         onCategoryClick = viewModel::onCategoryClick, // 카테고리 칩 누르면 ViewModel 함수 호출
-        onFavoriteClick = viewModel::onFavoriteClick,
-        // 하트 누르면 ViewModel 함수 호출
-        // onFavoriteClick(productId: Int)라서 Screen이 상품 id를 넣어서 부름
+        onFavoriteClick = viewModel::onFavoriteClick, // 하트 누르면 ViewModel 함수 호출
+        onSearchClick = onSearchClick,
         modifier = modifier,
     )
 }

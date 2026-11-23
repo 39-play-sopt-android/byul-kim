@@ -1,6 +1,7 @@
 package org.sopt.play.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,10 @@ import org.sopt.play.R
 import org.sopt.play.ui.theme.PlaySoptTheme
 
 @Composable
-fun PlaySoptTopBar(modifier: Modifier = Modifier) {
+fun PlaySoptTopBar(
+    onSearchClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    ) {
     Row(
         //가로로 나란히 배치
         modifier = modifier
@@ -41,6 +45,7 @@ fun PlaySoptTopBar(modifier: Modifier = Modifier) {
             contentDescription = "검색", // 의미 있는 아이콘이라 설명을 씀 (꾸밈용이면 null)
             tint = PlaySoptTheme.colors.black,
             modifier = Modifier
+                .clickable(onClick = onSearchClick)
                 .padding(10.dp) // 순서 중요! padding 먼저 → 바깥 여백
                 .size(28.dp),   // 피그마 실제 사용 크기 28
         )
@@ -51,6 +56,6 @@ fun PlaySoptTopBar(modifier: Modifier = Modifier) {
 @Composable
 private fun PlaySoptTopBarPreview() {
     PlaySoptTheme { // 앱 테마 입히기
-        PlaySoptTopBar() // 탑바 그리기
+        PlaySoptTopBar(onSearchClick = {})
     }
 }

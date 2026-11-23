@@ -10,3 +10,6 @@ data object Register
 
 @Serializable
 data object Home
+
+@Serializable
+data object Post // 게시글 화면 이름표 (홈 검색 아이콘 누르면 여기로 이동)

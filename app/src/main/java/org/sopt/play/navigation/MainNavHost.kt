@@ -11,10 +11,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.sopt.play.home.HomeRoute
 import org.sopt.play.login.LoginRoute
+import org.sopt.play.post.PostRoute
 import org.sopt.play.register.RegisterRoute
 
-// 1주차엔 화면마다 Activity(집)가 따로 있었는데, 이제는 MainActivity 하나 안에서
-// 이 NavHost가 화면(Login, Register, Home)을 바꿔 끼워줌 → SAA
+// 이 NavHost가 화면(Login, Register, Home, Post)을 바꿔 끼워줌 → SAA
 // 화면끼리 어떻게 이동하는지가 전부 이 파일 한 곳에 모여 있어서 앱 흐름을 한눈에 볼 수 있음
 @Composable
 fun MainNavHost(modifier: Modifier = Modifier) {
@@ -32,10 +32,9 @@ fun MainNavHost(modifier: Modifier = Modifier) {
     // 현재 화면 하나를 보여주고, navigate하면 다른 화면으로 바꿔 끼움
     NavHost(
         navController = navController,
-        startDestination = Login,          // 앱 켜면 처음 보일 화면
+        startDestination = Login, // 앱 켜면 처음 보일 화면
         modifier = modifier,
     ) { // composable<Route> { 화면 } 형태 = React Router의 <Route path element />
-        // Login 화면
         // Login 화면
         composable<Login> {
             LoginRoute(
@@ -53,7 +52,6 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         }
 
         // Register 화면
-        // Register 화면
         composable<Register> {
             RegisterRoute(
                 // RegisterRoute가 가입 성공하면 이메일, 비번을 위로 올려보냄
@@ -67,7 +65,16 @@ fun MainNavHost(modifier: Modifier = Modifier) {
 
         // Home 화면
         composable<Home> {
-            HomeRoute()
+            HomeRoute(
+                onSearchClick = { // "검색 아이콘 눌렸어!" 들으면
+                    navController.navigate(Post) // Post로 이동 (Home 기록은 남김 → 뒤로가기하면 홈으로)
+                },
+            )
+        }
+
+        // Post 화면 (게시글)
+        composable<Post> {
+            PostRoute()
         }
     }
 }
