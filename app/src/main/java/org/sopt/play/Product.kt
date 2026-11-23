@@ -14,7 +14,7 @@ data class Product(
     val isFavorite: Boolean,       // 찜했는지
 )
 
-val productList = listOf(
+val dummyProductList = listOf(
     Product(
         id = 1,
         image = R.drawable.img_product1,

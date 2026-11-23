@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.Product
 import org.sopt.play.R
-import org.sopt.play.productList
+import org.sopt.play.dummyProductList
 import org.sopt.play.ui.theme.M14
 import org.sopt.play.ui.theme.PlaySoptTheme
 
@@ -113,12 +113,12 @@ private fun ProductCardPreview() {
     PlaySoptTheme {
         Row {
             ProductCard(
-                product = productList[1],
+                product = dummyProductList[1],
                 onFavoriteClick = {},
                 modifier = Modifier.width(176.dp)
             )   // 찜 O, 이름 김
             ProductCard(
-                product = productList[2],
+                product = dummyProductList[2],
                 onFavoriteClick = {},
                 modifier = Modifier.width(176.dp)
             )   // 찜 X, 이름 짧음

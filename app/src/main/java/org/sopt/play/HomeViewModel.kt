@@ -30,7 +30,7 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun loadProducts() {
-        _uiState.update { it.copy(products = productList) }
+        _uiState.update { it.copy(products = dummyProductList) }
         // Product.kt의 productList를 상태에 넣음
         // private → ViewModel 안에서만 호출 (Screen이 부를 일 없음)
     }
