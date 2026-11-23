@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.data.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.part
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import org.sopt.play.data.Part
+import org.sopt.play.data.remote.RetrofitClient
+import org.sopt.play.data.remote.dto.AuthorizationCodeRequest
 
 // SideEffect
 sealed interface MainSideEffect {

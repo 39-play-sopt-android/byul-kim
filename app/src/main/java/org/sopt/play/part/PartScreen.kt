@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.part
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.sopt.play.data.Part
 
 @Composable
 fun PartScreen(

@@ -1,5 +1,7 @@
-package org.sopt.play
+package org.sopt.play.data.remote
 
+import org.sopt.play.data.remote.dto.AuthorizationCodeRequest
+import org.sopt.play.data.remote.dto.AuthorizationCodeResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
