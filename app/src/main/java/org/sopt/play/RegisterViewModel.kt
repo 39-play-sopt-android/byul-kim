@@ -33,9 +33,15 @@ data class RegisterUiState(
         get() = passwordConfirm.isNotEmpty() && passwordConfirm != password
     // 입력했는데 비밀번호랑 다르면 에러
 
-    val isRegisterEnabled: Boolean
-        get() = name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty() && !isEmailError && !isPasswordError && !isPasswordConfirmError
     // 4칸 다 입력 && 에러 하나도 없으면 버튼 활성화
+    val isRegisterEnabled: Boolean
+        get() = name.isNotEmpty() && // 이름 입력함
+                email.isNotEmpty() && // 이메일 입력함
+                password.isNotEmpty() && // 비밀번호 입력함
+                passwordConfirm.isNotEmpty() && // 비밀번호 확인 입력함
+                !isEmailError && // 이메일 형식 맞음
+                !isPasswordError && // 비밀번호 6자 이상
+                !isPasswordConfirmError // 비밀번호 확인 일치
 }
 
 // 회원가입 화면 SideEffect (한 번만 처리되는 이벤트)

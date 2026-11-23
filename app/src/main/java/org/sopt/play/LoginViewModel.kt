@@ -33,9 +33,12 @@ data class LoginUiState(
         get() = password.isNotEmpty() && password.length < 6
     // 뭔가 쳤는데 && 6글자보다 적으면 → 에러(true)
 
+    // 이메일, 비밀번호 다 입력 && 에러 둘 다 없으면 → 버튼 켜짐(true)
     val isLoginEnabled: Boolean
-        get() = email.isNotEmpty() && password.isNotEmpty() && !isEmailError && !isPasswordError
-    // 이메일 칸 비어있지 않고 && 비밀번호 칸 비어있지 않고 && 에러 둘 다 없으면 → 버튼 켜짐(true)
+        get() = email.isNotEmpty() && // 이메일 칸 비어있지 않음
+                password.isNotEmpty() && // 비밀번호 칸 비어있지 않음
+                !isEmailError && // 이메일 형식 맞음
+                !isPasswordError // 비밀번호 6자 이상
 }
 
 // ② LoginSideEffect = ViewModel이 Screen에게 보내는 약속된 명령
