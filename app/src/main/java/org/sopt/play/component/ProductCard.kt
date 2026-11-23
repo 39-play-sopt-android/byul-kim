@@ -22,9 +22,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.sopt.play.Product
 import org.sopt.play.R
-import org.sopt.play.dummyProductList
+import org.sopt.play.home.Product
+import org.sopt.play.home.dummyProductList
 import org.sopt.play.ui.theme.M14
 import org.sopt.play.ui.theme.PlaySoptTheme
 

@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.login
 
 import android.util.Patterns
 

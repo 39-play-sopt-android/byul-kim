@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.home
 
 // 홈 화면 UI 상태
 // HomeViewModel.kt 안에 있다가 Login, Register랑 맞춰서 따로 파일로 분리함

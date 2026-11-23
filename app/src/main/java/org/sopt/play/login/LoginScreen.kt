@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.login
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable

@@ -1,7 +1,8 @@
-package org.sopt.play
+package org.sopt.play.home
 
 
 import androidx.annotation.DrawableRes
+import org.sopt.play.R
 
 // 상품 하나의 정보를 묶어두는 틀
 data class Product(

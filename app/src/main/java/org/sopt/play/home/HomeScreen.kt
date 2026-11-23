@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.sopt.play.R
 import org.sopt.play.component.CategoryChip
 import org.sopt.play.component.PlaySoptTopBar
 import org.sopt.play.component.ProductCard

@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.register
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column

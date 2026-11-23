@@ -1,17 +1,17 @@
 package org.sopt.play.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.sopt.play.HomeScreen
-import org.sopt.play.LoginScreen
-import org.sopt.play.RegisterScreen
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import org.sopt.play.home.HomeScreen
+import org.sopt.play.login.LoginScreen
+import org.sopt.play.register.RegisterScreen
 
 // 1주차엔 화면마다 Activity(집)가 따로 있었는데, 이제는 MainActivity 하나 안에서
 // 이 NavHost가 화면(Login, Register, Home)을 바꿔 끼워줌 → SAA

@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.home
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

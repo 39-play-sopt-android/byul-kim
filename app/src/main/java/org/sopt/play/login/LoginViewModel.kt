@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

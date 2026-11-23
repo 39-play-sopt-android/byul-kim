@@ -1,4 +1,4 @@
-package org.sopt.play
+package org.sopt.play.home
 
 // HomeScreen(화면)이랑 HomeUiState(상태) 둘 다 써서 화면 파일 밖으로 분리함
 // → HomeScreen.kt는 화면 그리기만, 같이 쓰는 타입은 여기서 관리
