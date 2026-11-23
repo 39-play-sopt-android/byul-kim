@@ -1,6 +1,5 @@
-package org.sopt.play
+package org.sopt.play.register
 
-import android.util.Patterns
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,10 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,32 +26,19 @@ import org.sopt.play.ui.theme.Gray3
 import org.sopt.play.ui.theme.PlaySoptTheme
 import org.sopt.play.ui.theme.Sb14
 
+// 회원가입 화면 "그리기 담당"
+// ViewModel을 모르고, 받은 uiState로 그리기만 함
+// 입력이나 클릭이 생기면 받은 함수를 불러서 밖(Route)에 알리기만 함
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (String, String) -> Unit,
+    uiState: RegisterUiState, // 화면에 그릴 상태 (Route가 줌)
+    onNameChange: (String) -> Unit, // 이름 칸 글자 바뀌면 할 일
+    onEmailChange: (String) -> Unit, // 이메일 칸 글자 바뀌면 할 일
+    onPasswordChange: (String) -> Unit, // 비밀번호 칸 글자 바뀌면 할 일
+    onPasswordConfirmChange: (String) -> Unit, // 비밀번호 확인 칸 글자 바뀌면 할 일
+    onRegisterClick: () -> Unit, // 회원가입 버튼 누르면 할 일
     modifier: Modifier = Modifier,
-    //onRegisterClick 버튼 누르면 할 일을 밖에서 받음. (String, String) 이메일, 비밀번호 2개를 넘겨줌
-    // -> Unit 돌려주는건 없음
-    //= { _, _ -> } 는 기본값: 아무것도 안 함 (Preview용)
 ) {
-    var name by rememberSaveable { mutableStateOf("") }
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordConfirm by rememberSaveable { mutableStateOf("") }
-    //입력값 상자 4개 (이름, 이메일, 비밀번호, 비밀번호 확인)
-
-    val isEmailError = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    val isPasswordError = password.isNotEmpty() && password.length < 6
-    //로그인이랑 똑같음 쳤는데 이메일 모양 아니면 에러, 6글자보다 적으면 에러
-
-    val isPasswordConfirmError = passwordConfirm.isNotEmpty() && passwordConfirm != password
-    //쳤는데 비밀번호랑 다르면 에러
-
-    val isRegisterEnabled = name.isNotEmpty() &&
-            email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty() &&
-            !isEmailError && !isPasswordError && !isPasswordConfirmError
-    //4칸 다 쳤고 && 에러가 하나도 없으면 → 버튼 켜짐
-
     Column( //세로 배치
         modifier = modifier
             .fillMaxSize()
@@ -73,11 +55,10 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        //LoginTextField 재사용! (private 지워서 여기서도 쓸 수 있음)
         SoptTextField(
             label = "이름",
-            value = name,
-            onValueChange = { name = it },
+            value = uiState.name, // uiState에서 가져옴
+            onValueChange = onNameChange, // 받은 함수 호출 (실제로는 ViewModel 함수)
             placeholder = "홍길동"
         )
 
@@ -85,10 +66,10 @@ fun RegisterScreen(
 
         SoptTextField(
             label = "이메일 주소",
-            value = email,
-            onValueChange = { email = it },
+            value = uiState.email,
+            onValueChange = onEmailChange,
             placeholder = "abc@email.com",
-            isError = isEmailError,
+            isError = uiState.isEmailError,
             errorMessage = "올바른 이메일을 입력해주세요."
         )
 
@@ -96,11 +77,11 @@ fun RegisterScreen(
 
         SoptTextField(
             label = "비밀번호",
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = onPasswordChange,
             placeholder = "6자 이상의 비밀번호",
             isPassword = true,
-            isError = isPasswordError,
+            isError = uiState.isPasswordError,
             errorMessage = "비밀번호는 6자 이상 입력해주세요."
         )
 
@@ -108,19 +89,19 @@ fun RegisterScreen(
 
         SoptTextField(
             label = "비밀번호 확인",
-            value = passwordConfirm,
-            onValueChange = { passwordConfirm = it },
+            value = uiState.passwordConfirm,
+            onValueChange = onPasswordConfirmChange,
             placeholder = "6자 이상의 비밀번호",
             isPassword = true,
-            isError = isPasswordConfirmError,
+            isError = uiState.isPasswordConfirmError,
             errorMessage = "비밀번호와 동일하게 입력해주세요."
         )
 
         Spacer(modifier = Modifier.height(40.dp))
 
         Button(
-            onClick = { onRegisterClick(email, password) }, //입력한 이메일 , 비밀번호를 밖으로 넘김
-            enabled = isRegisterEnabled, //조건이 맞으면 켜짐
+            onClick = onRegisterClick, // 가입 처리는 Route → ViewModel에 맡김
+            enabled = uiState.isRegisterEnabled, // uiState에서 가져옴
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Black,
@@ -136,10 +117,40 @@ fun RegisterScreen(
     }
 }
 
+// 처음 들어왔을 때 (빈 칸, 버튼 꺼짐)
 @Preview(showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
     PlaySoptTheme {
-        RegisterScreen(onRegisterClick = { _, _ -> })
+        RegisterScreen(
+            uiState = RegisterUiState(), // 가짜 상태: 아무것도 안 쓴 상태
+            onNameChange = {},
+            onEmailChange = {},
+            onPasswordChange = {},
+            onPasswordConfirmChange = {},
+            onRegisterClick = {},
+        )
+    }
+}
+
+// 다 맞게 입력한 상태 (버튼 켜짐)
+@Preview(showBackground = true)
+@Composable
+private fun RegisterScreenFilledPreview() {
+    PlaySoptTheme {
+        RegisterScreen(
+            uiState = RegisterUiState(
+                name = "김솝트",
+                email = "sopt@sopt.org",
+                password = "123456",
+                passwordConfirm = "123456",
+            ),
+            // 4칸 다 입력 + 에러 없음 → isRegisterEnabled = true → 버튼 검정
+            onNameChange = {},
+            onEmailChange = {},
+            onPasswordChange = {},
+            onPasswordConfirmChange = {},
+            onRegisterClick = {},
+        )
     }
 }

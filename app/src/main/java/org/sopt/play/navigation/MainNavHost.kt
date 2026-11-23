@@ -1,17 +1,17 @@
 package org.sopt.play.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.sopt.play.HomeScreen
-import org.sopt.play.LoginScreen
-import org.sopt.play.RegisterScreen
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import org.sopt.play.home.HomeRoute
+import org.sopt.play.login.LoginRoute
+import org.sopt.play.register.RegisterRoute
 
 // 1주차엔 화면마다 Activity(집)가 따로 있었는데, 이제는 MainActivity 하나 안에서
 // 이 NavHost가 화면(Login, Register, Home)을 바꿔 끼워줌 → SAA
@@ -36,36 +36,38 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         modifier = modifier,
     ) { // composable<Route> { 화면 } 형태 = React Router의 <Route path element />
         // Login 화면
+        // Login 화면
         composable<Login> {
-            LoginScreen(
-                registeredEmail = registeredEmail,           // 짐 내려주기
+            LoginRoute(
+                registeredEmail = registeredEmail, // 짐 내려주기
                 registeredPassword = registeredPassword,
-                onLoginSuccess = {                           // "성공!" 들으면
-                    navController.navigate(Home) {           // Home으로 이동하고
-                        popUpTo<Login> { inclusive = true }  // Login 기록 지우기
+                onLoginSuccess = { // "성공!" 들으면
+                    navController.navigate(Home) { // Home으로 이동하고
+                        popUpTo<Login> { inclusive = true } // Login 기록 지우기
                     }
                 },
-                onRegisterClick = {                          // "회원가입!" 들으면
-                    navController.navigate(Register)         // Register로 이동
+                onRegisterClick = { // "회원가입!" 들으면
+                    navController.navigate(Register) // Register로 이동
                 },
             )
         }
 
         // Register 화면
+        // Register 화면
         composable<Register> {
-            RegisterScreen(
-                // RegisterScreen이 가입 버튼 누르면 이메일, 비번을 위로 올려보냄
-                onRegisterClick = { email, password ->       // 가입 정보 받으면
-                    registeredEmail = email                  // 거실에 짐 저장
+            RegisterRoute(
+                // RegisterRoute가 가입 성공하면 이메일, 비번을 위로 올려보냄
+                onRegisterSuccess = { email, password -> // 가입 성공 정보 받으면
+                    registeredEmail = email // 거실에 짐 저장
                     registeredPassword = password
-                    navController.popBackStack()             // 뒤로 = Login으로
+                    navController.popBackStack() // 뒤로 = Login으로
                 },
             )
         }
 
         // Home 화면
         composable<Home> {
-            HomeScreen()
+            HomeRoute()
         }
     }
 }
