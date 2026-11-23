@@ -1,7 +1,5 @@
 package org.sopt.play
-// LoginScreen.kt랑 같은 org.sopt.play라서 서로 import 없이 바로 부를 수 있음
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -13,35 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// ① LoginUiState = 로그인 화면에 보이는 값을 한 상자에 묶은 것
-// data class = 값 담는 용도의 클래스, copy() 함수가 자동으로 생김
-// 원래 var email, var password가 따로 있었는데 → 한 상자로 묶어서 uiState 하나만 넘기면 됨
-data class LoginUiState(
-    val email: String = "", // 이메일 칸에 적힌 글자 (= "" 은 기본값 → 처음엔 빈 글자)
-    val password: String = "", // 비밀번호 칸에 적힌 글자 (처음엔 빈 글자)
-    // val(못 바꾸는 값)인 이유: 안의 값을 직접 고치는 게 아니라 새 상자로 통째로 교체할 거라서
-) {
-    // 여기부터는 email, password만 있으면 "계산"할 수 있는 값들
-    // get() = ... → 이 값을 읽을 때마다 그때그때 계산해서 돌려줌
-    // 저장 안 하고 계산하는 이유: email만 바꿔도 에러 여부가 자동으로 맞춰져서 값이 어긋날 일이 없음
+// LoginUiState(화면 상태)는 LoginUiState.kt로 분리함
+// → 이 파일에는 이벤트(SideEffect)랑 로직(ViewModel)만 남김
 
-    val isEmailError: Boolean
-        get() = email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    // 뭔가 쳤는데(isNotEmpty) && 이메일 모양이 아니면(!~matches) → 에러(true)
-
-    val isPasswordError: Boolean
-        get() = password.isNotEmpty() && password.length < 6
-    // 뭔가 쳤는데 && 6글자보다 적으면 → 에러(true)
-
-    // 이메일, 비밀번호 다 입력 && 에러 둘 다 없으면 → 버튼 켜짐(true)
-    val isLoginEnabled: Boolean
-        get() = email.isNotEmpty() && // 이메일 칸 비어있지 않음
-                password.isNotEmpty() && // 비밀번호 칸 비어있지 않음
-                !isEmailError && // 이메일 형식 맞음
-                !isPasswordError // 비밀번호 6자 이상
-}
-
-// ② LoginSideEffect = ViewModel이 Screen에게 보내는 약속된 명령
+// ① LoginSideEffect = ViewModel이 Screen에게 보내는 약속된 명령
 // 왜 따로 만듦? 토스트엔 context(화면 정보)가 필요한데 ViewModel은 화면보다 오래 살아서
 // context를 들고 있으면 옛날 화면이 메모리에서 안 지워짐
 // → ViewModel은 명령만 보내고, 실제로 띄우는 건 context 가진 Screen이 함
@@ -58,12 +31,13 @@ sealed interface LoginSideEffect {
     // 무슨 말을 띄울지 message를 들고 가야 해서 class
 }
 
-// ③ LoginViewModel = 상태 보관 + 로직 담당
+// ② LoginViewModel = 상태 보관 + 로직 담당
 class LoginViewModel : ViewModel() {
     // : ViewModel() → ViewModel을 물려받음 → 화면 돌려도 안 사라지는 능력 생김
 
     private val _uiState = MutableStateFlow(LoginUiState())
     // 상태가 흐르는 파이프. 처음 값은 LoginUiState() = 빈 이메일, 빈 비밀번호 상자
+    // LoginUiState는 다른 파일(LoginUiState.kt)에 있지만 같은 패키지라 import 없이 바로 씀
     // private → ViewModel 안에서만 수정 가능 (Screen은 손 못 댐 = 상태 캡슐화)
     // 이름 앞에 _ → 이건 내부용 원본이야라는 안드로이드 개발자들 약속
 

@@ -6,18 +6,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-// 홈 화면 UI 상태
-data class HomeUiState(
-    val selectedMenu: HomeMenu = HomeMenu.HOME, // 선택된 메뉴 탭 (처음엔 홈)
-    val selectedCategory: ProductCategory = ProductCategory.ALL, // 선택된 카테고리 칩 (처음엔 전체)
-    val products: List<Product> = emptyList(), // 상품 목록 (처음엔 빈 리스트 → init에서 채움)
-)
+// HomeUiState(화면 상태)는 HomeUiState.kt로 분리함
+// → 이 파일에는 로직(ViewModel)만 남김
 
 class HomeViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
-
     // 수정 가능한 상태 (ViewModel 내부에서만 변경)
+
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     // Screen에는 읽기 전용으로 공개
 
@@ -31,7 +27,8 @@ class HomeViewModel : ViewModel() {
 
     private fun loadProducts() {
         _uiState.update { it.copy(products = dummyProductList) }
-        // Product.kt의 productList를 상태에 넣음
+        // Product.kt의 더미 상품 목록을 상태에 넣음
+        // 나중에 상품 API가 생기면 이 함수 안만 API 호출로 바꾸면 됨
         // private → ViewModel 안에서만 호출 (Screen이 부를 일 없음)
     }
 
@@ -45,7 +42,7 @@ class HomeViewModel : ViewModel() {
         // 현재 상태 복사 + selectedCategory만 클릭된 카테고리로 교체
     }
 
-    //하트 클릭 -> 해당 상품의 좋아요 상태 반전
+    // 하트 클릭 -> 해당 상품의 좋아요 상태 반전
     fun onFavoriteClick(productId: Int) {
         _uiState.update { state ->
             // state = 현재 HomeUiState (it 대신 이름 붙임 → 안에서 product랑 헷갈리지 않게)
@@ -59,8 +56,7 @@ class HomeViewModel : ViewModel() {
                         product
                         // 나머지 상품 -> 그대로
                     }
-
-                }
+                },
             )
         }
     }
