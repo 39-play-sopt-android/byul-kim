@@ -34,9 +34,10 @@ import org.sopt.play.ui.theme.Sb14
 
 @Composable
 fun RegisterScreen(
-    onRegisterClick: (String, String) -> Unit,
-    //onRegisterClick 가입 완료되면 할 일을 밖에서 받음. (String, String) 이메일, 비밀번호 2개를 넘겨줌
-    // -> Unit 돌려주는건 없음
+    onRegisterSuccess: (String, String) -> Unit,
+    // 회원가입이 끝나면(NavigateToLogin 받았을 때) 할 일을 밖에서 받음
+    // (String, String) = 이메일, 비밀번호 2개를 넘겨줌
+    // 클릭할 때가 아니라 가입 성공 후에 불려서 Success라고 이름 붙임 (로그인의 onLoginSuccess와 통일)
     modifier: Modifier = Modifier,
     viewModel: RegisterViewModel = viewModel(),
     // ViewModelProvider를 통해 RegisterViewModel 받아오기 (직접 생성 X)
@@ -56,8 +57,8 @@ fun RegisterScreen(
                 }
 
                 is RegisterSideEffect.NavigateToLogin -> {
-                    onRegisterClick(sideEffect.email, sideEffect.password)
-                    // 밖(NavHost)에 가입 정보 전달 → NavHost가 저장하고 popBackStack
+                    onRegisterSuccess(sideEffect.email, sideEffect.password)
+                    // 가입 성공 → 밖(NavHost)에 가입 정보 전달 → NavHost가 저장하고 popBackStack
                     // 둘 다 data class라서 is로 타입 확인 후 안의 값 꺼냄
                 }
             }
@@ -126,7 +127,6 @@ fun RegisterScreen(
 
         Button(
             onClick = viewModel::onRegisterClick,
-            // ViewModel에 클릭 이벤트 전달 (onRegisterClick(email, password) 직접 호출)
             // 매개변수 없는 함수라서 { viewModel.onRegisterClick() } 대신 함수 참조로 바로 넘김
             enabled = uiState.isRegisterEnabled, // uiState에서 가져옴
             shape = CircleShape,
@@ -148,6 +148,6 @@ fun RegisterScreen(
 @Composable
 private fun RegisterScreenPreview() {
     PlaySoptTheme {
-        RegisterScreen(onRegisterClick = { _, _ -> })
+        RegisterScreen(onRegisterSuccess = { _, _ -> })
     }
 }

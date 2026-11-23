@@ -55,7 +55,7 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         composable<Register> {
             RegisterScreen(
                 // RegisterScreen이 가입 버튼 누르면 이메일, 비번을 위로 올려보냄
-                onRegisterClick = { email, password ->       // 가입 정보 받으면
+                onRegisterSuccess = { email, password ->       // 가입 성공 정보 받으면
                     registeredEmail = email                  // 거실에 짐 저장
                     registeredPassword = password
                     navController.popBackStack()             // 뒤로 = Login으로
