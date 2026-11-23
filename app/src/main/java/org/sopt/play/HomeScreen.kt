@@ -35,28 +35,16 @@ import org.sopt.play.component.ProductCard
 import org.sopt.play.component.TabMenuItem
 import org.sopt.play.ui.theme.PlaySoptTheme
 
-// 메뉴 탭 목록
-// enum class = 정해진 값만 쓸 수 있는 목록
-// HOME = 코드에서 부르는 이름 / label("홈") = 화면에 보여줄 글자
-// private 제거 → HomeViewModel.kt의 HomeUiState에서도 써야 해서
-enum class HomeMenu(val label: String) {
-    DOUBLE_POINT("2배적립"), HOME("홈"), SELECTED("셀렉티드"), BRAND("브랜드"),
-    BEAUTY("뷰티"), LIFE("라이프"), RANKING("랭킹"),
-}
+// HomeMenu, ProductCategory는 HomeContract.kt로 분리함
+// (화면이랑 HomeUiState가 같이 쓰는 타입이라서)
 
 // 배너 이미지 목록 (바뀌지 않는 고정 리소스라 상태 아님 → 여기 그대로 둠)
+// 화면에서만 쓰니까 private 유지
 private val bannerImages = listOf(
     R.drawable.img_banner1,
     R.drawable.img_banner2,
     R.drawable.img_banner3,
 )
-
-// 카테고리 칩 목록
-// private 제거 → HomeUiState에서도 써야 해서
-enum class ProductCategory(val label: String) {
-    ALL("전체"), TOP("상의"), PANTS("팬츠"), ONEPIECE("원피스"), OUTER("아우터"),
-    SKIRT("스커트"), SHOES("슈즈"), BAG("가방"), INNERWEAR("이너웨어/잠옷"), PHONE_DECO("폰꾸미기"),
-}
 
 // 홈 화면 (로그인 성공 후 도착하는 화면)
 @Composable
@@ -66,7 +54,7 @@ fun HomeScreen(
     // ViewModelProvider를 통해 HomeViewModel 받아오기 (직접 생성 X)
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // [uiState 구독 → 값 바뀌면 리컴포지션
+    // uiState 구독 → 값 바뀌면 리컴포지션
 
     // Scaffold = 화면 뼈대
     Scaffold(
@@ -155,7 +143,6 @@ fun HomeScreen(
                 items = uiState.products,
                 key = { product -> product.id },
                 // 각 아이템의 고유 key = 상품 id
-
             ) { product ->
                 ProductCard(
                     product = product,
@@ -179,6 +166,7 @@ private fun HomeMenuTabs(
     Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
         HomeMenu.entries.forEach { menu ->
             // HomeMenu.entries = enum 값 전체를 하나씩 꺼냄
+            // HomeMenu는 HomeContract.kt에 있지만 같은 패키지라 import 없이 바로 씀
             TabMenuItem(
                 text = menu.label, // 화면엔 "홈" 같은 글자
                 isSelected = menu == selectedMenu, // 나 == 선택된 메뉴면 선택!
