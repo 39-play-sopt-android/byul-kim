@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.sopt.play.home.HomeScreen
-import org.sopt.play.login.LoginScreen
+import org.sopt.play.login.LoginRoute
 import org.sopt.play.register.RegisterScreen
 
 // 1주차엔 화면마다 Activity(집)가 따로 있었는데, 이제는 MainActivity 하나 안에서
@@ -36,17 +36,18 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         modifier = modifier,
     ) { // composable<Route> { 화면 } 형태 = React Router의 <Route path element />
         // Login 화면
+        // Login 화면
         composable<Login> {
-            LoginScreen(
-                registeredEmail = registeredEmail,           // 짐 내려주기
+            LoginRoute(
+                registeredEmail = registeredEmail, // 짐 내려주기
                 registeredPassword = registeredPassword,
-                onLoginSuccess = {                           // "성공!" 들으면
-                    navController.navigate(Home) {           // Home으로 이동하고
-                        popUpTo<Login> { inclusive = true }  // Login 기록 지우기
+                onLoginSuccess = { // "성공!" 들으면
+                    navController.navigate(Home) { // Home으로 이동하고
+                        popUpTo<Login> { inclusive = true } // Login 기록 지우기
                     }
                 },
-                onRegisterClick = {                          // "회원가입!" 들으면
-                    navController.navigate(Register)         // Register로 이동
+                onRegisterClick = { // "회원가입!" 들으면
+                    navController.navigate(Register) // Register로 이동
                 },
             )
         }

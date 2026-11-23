@@ -1,6 +1,5 @@
 package org.sopt.play.login
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,15 +18,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.play.component.SoptTextField
 import org.sopt.play.ui.theme.B28
 import org.sopt.play.ui.theme.Black
@@ -41,44 +35,18 @@ import org.sopt.play.ui.theme.Sb14
 //Ctrl + Alt + o 누르면 자동 정리
 //Ctrl + Alt + L 으로 자동 정렬
 
+// 로그인 화면 "그리기 담당"
+// ViewModel을 모르고, 받은 uiState로 그리기만 함
+// 입력이나 클릭이 생기면 받은 함수(onEmailChange 등)를 불러서 밖(Route)에 알리기만 함
 @Composable //@Composable: 화면 그리는 함수 표시
 fun LoginScreen(
-    registeredEmail: String, // 회원가입한 이메일 (밖에서 받음)
-    registeredPassword: String, // 회원가입한 비밀번호 (밖에서 받음)
-    onLoginSuccess: () -> Unit, // 로그인 성공하면 할 일 (밖에서 정함)
-    onRegisterClick: () -> Unit, // 회원가입하기 누르면 할 일 (밖에서 정함)
+    uiState: LoginUiState, // 화면에 그릴 상태 (Route가 줌)
+    onEmailChange: (String) -> Unit, // 이메일 칸 글자 바뀌면 할 일
+    onPasswordChange: (String) -> Unit, // 비밀번호 칸 글자 바뀌면 할 일
+    onLoginClick: () -> Unit, // 로그인 버튼 누르면 할 일
+    onRegisterClick: () -> Unit, // 회원가입하기 누르면 할 일
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel(),
-    // 이 화면에서 쓸 ViewModel
-    // viewModel() = ViewModelProvider를 통해 LoginViewModel 인스턴스를 받아오는 함수
-    // 이미 만들어진 게 있으면 그걸 주고, 없으면 새로 만들어줌 → 화면 회전해도 같은 ViewModel 유지
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // ViewModel의 uiState(StateFlow)를 구독해서 Compose State로 바꿈
-    // uiState 값이 바뀔 때마다 리컴포지션 → 화면 다시 그림
-    // collectAsStateWithLifecycle = 앱이 백그라운드로 가면 구독을 멈추고, 돌아오면 다시 구독
-    // by = uiState.value 대신 uiState로 바로 쓰게 해줌
-
-    val context = LocalContext.current //지금 화면 정보 (토스트에 필요)
-
-    LaunchedEffect(Unit) {
-        // 화면이 처음 그려질 때 딱 한 번 실행되는 코루틴
-        // key가 Unit(안 바뀌는 값)이라서 화면이 살아있는 동안 재시작 안 됨
-        viewModel.sideEffect.collect { sideEffect ->
-            // ViewModel이 emit한 sideEffect(SharedFlow)를 구독
-            when (sideEffect) {
-                // sealed interface라서 종류가 정해져 있음 → 하나라도 빠뜨리면 컴파일 에러
-                LoginSideEffect.NavigateToHome -> onLoginSuccess()
-                // 홈 이동 → 밖(NavHost)에 성공 알리기 → NavHost가 Home으로 navigate
-                is LoginSideEffect.ShowToast -> {
-                    Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-                    // 토스트 → context는 Screen에만 있어서 Screen에서 띄움
-                    // is = 이 종류야? 확인 → ShowToast는 class라서 is로 확인해야 message를 꺼낼 수 있음
-                }
-            }
-        }
-    }
-
     Column( //전체 세로 배치
         modifier = modifier
             .fillMaxSize() //화면 전체 크기
@@ -99,11 +67,8 @@ fun LoginScreen(
         // 이메일 비밀번호 입력
         SoptTextField(
             label = "이메일 주소", //위에 보일 이름
-            value = uiState.email,
-            // uiState의 email 표시
-            onValueChange = viewModel::onEmailChange,
-            // 입력 바뀌면 ViewModel 함수 호출
-            // viewModel::onEmailChange = { viewModel.onEmailChange(it) } 를 줄인 함수 참조
+            value = uiState.email, // uiState의 email 표시
+            onValueChange = onEmailChange, // 입력 바뀌면 받은 함수 호출 (실제로는 ViewModel 함수)
             placeholder = "abc@email.com", //안내 글자
             isError = uiState.isEmailError,
             // 에러 여부도 uiState에서 가져옴 (계산은 LoginUiState의 get()이 함)
@@ -115,7 +80,7 @@ fun LoginScreen(
         SoptTextField(
             label = "비밀번호",
             value = uiState.password, // uiState의 password 표시
-            onValueChange = viewModel::onPasswordChange, // ViewModel 함수 호출
+            onValueChange = onPasswordChange,
             placeholder = "6자 이상의 비밀번호",
             isPassword = true, //비밀번호 적으면 가려줘
             isError = uiState.isPasswordError, // uiState에서 가져옴
@@ -126,14 +91,8 @@ fun LoginScreen(
 
         // 로그인 버튼
         Button(
-            onClick = {
-                viewModel.onLoginClick(registeredEmail, registeredPassword)
-                // 로그인 판단은 ViewModel에 맡김
-                // 성공/실패 판단 + sideEffect emit은 ViewModel이 하고, Screen은 위 LaunchedEffect에서 처리
-
-            },
-            enabled = uiState.isLoginEnabled,
-            // 버튼 활성화 여부도 uiState에서 가져옴
+            onClick = onLoginClick, // 로그인 판단은 Route → ViewModel에 맡김
+            enabled = uiState.isLoginEnabled, // 버튼 활성화 여부도 uiState에서 가져옴
             shape = CircleShape, //알약 모양
             colors = ButtonDefaults.buttonColors( //버튼 색 정하는 거
                 containerColor = Black, //활성일 때 배경 (검정)
@@ -160,22 +119,38 @@ fun LoginScreen(
                 style = M14,
                 color = Gray6,
                 modifier = Modifier.clickable { onRegisterClick() } // "회원가입 눌렸어!" 하고 밖에 알리기
-                // 상태 변경 없이 화면 이동만 하는 거라 ViewModel 안 거치고 그대로 둠
             )
         }
     }
 }
 
+// 처음 들어왔을 때 (빈 칸)
 @Preview(showBackground = true)
 @Composable
 private fun LoginScreenPreview() {
     PlaySoptTheme {
         LoginScreen(
-            registeredEmail = "",
-            registeredPassword = "",
-            onLoginSuccess = {},
+            uiState = LoginUiState(), // 가짜 상태: 아무것도 안 쓴 상태
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
             onRegisterClick = {},
-            // viewModel은 기본값(viewModel())이 있어서 안 넣어도 됨
+        )
+    }
+}
+
+// 에러가 뜬 상태 (ViewModel 없이 가짜 상태만 넣어서 바로 확인 가능)
+@Preview(showBackground = true)
+@Composable
+private fun LoginScreenErrorPreview() {
+    PlaySoptTheme {
+        LoginScreen(
+            uiState = LoginUiState(email = "sopt", password = "123"),
+            // 이메일 형식 틀림 + 비밀번호 6자 미만 → 에러 두 개 다 뜬 화면
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onRegisterClick = {},
         )
     }
 }
