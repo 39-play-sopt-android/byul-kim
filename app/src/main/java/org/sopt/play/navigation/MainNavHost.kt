@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.sopt.play.home.HomeScreen
+import org.sopt.play.home.HomeRoute
 import org.sopt.play.login.LoginRoute
 import org.sopt.play.register.RegisterRoute
 
@@ -67,7 +67,7 @@ fun MainNavHost(modifier: Modifier = Modifier) {
 
         // Home 화면
         composable<Home> {
-            HomeScreen()
+            HomeRoute()
         }
     }
 }

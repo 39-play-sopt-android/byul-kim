@@ -21,14 +21,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.sopt.play.R
 import org.sopt.play.component.CategoryChip
 import org.sopt.play.component.PlaySoptTopBar
@@ -47,16 +44,16 @@ private val bannerImages = listOf(
     R.drawable.img_banner3,
 )
 
-// 홈 화면 (로그인 성공 후 도착하는 화면)
+// 홈 화면 "그리기 담당" (로그인 성공 후 도착하는 화면)
+// ViewModel을 모르고, 받은 uiState로 그리기만 함
 @Composable
 fun HomeScreen(
+    uiState: HomeUiState, // 화면에 그릴 상태 (Route가 줌)
+    onMenuClick: (HomeMenu) -> Unit, // 메뉴 탭 누르면 할 일
+    onCategoryClick: (ProductCategory) -> Unit, // 카테고리 칩 누르면 할 일
+    onFavoriteClick: (Int) -> Unit, // 하트 누르면 할 일 (Int = 눌린 상품 id)
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(),
-    // ViewModelProvider를 통해 HomeViewModel 받아오기 (직접 생성 X)
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    // uiState 구독 → 값 바뀌면 리컴포지션
-
     // Scaffold = 화면 뼈대
     Scaffold(
         modifier = modifier,
@@ -79,10 +76,8 @@ fun HomeScreen(
             // 메뉴 탭 (한 줄 통째로)
             item(span = { GridItemSpan(maxLineSpan) }) {
                 HomeMenuTabs(
-                    selectedMenu = uiState.selectedMenu,
-                    // 선택된 메뉴를 uiState에서 가져옴
-                    onMenuClick = viewModel::onMenuClick,
-                    // 메뉴 클릭되면 ViewModel 함수 호출 (2주차: { selectedMenu = it })
+                    selectedMenu = uiState.selectedMenu, // 선택된 메뉴를 uiState에서 가져옴
+                    onMenuClick = onMenuClick, // 받은 함수 그대로 넘김 (실제로는 ViewModel 함수)
                 )
             }
 
@@ -127,10 +122,8 @@ fun HomeScreen(
             // 카테고리 칩
             item(span = { GridItemSpan(maxLineSpan) }) {
                 CategoryChips(
-                    selectedCategory = uiState.selectedCategory,
-                    // 선택된 카테고리를 uiState에서 가져옴
-                    onCategoryClick = viewModel::onCategoryClick,
-                    // 칩 클릭되면 ViewModel 함수 호출 (2주차: { selectedCategory = it })
+                    selectedCategory = uiState.selectedCategory, // 선택된 카테고리를 uiState에서 가져옴
+                    onCategoryClick = onCategoryClick, // 받은 함수 그대로 넘김
                 )
             }
 
@@ -147,8 +140,8 @@ fun HomeScreen(
             ) { product ->
                 ProductCard(
                     product = product,
-                    onFavoriteClick = { viewModel.onFavoriteClick(product.id) },
-                    // 하트 클릭 → ViewModel에 이 id 상품 좋아요 눌렸어 전달
+                    onFavoriteClick = { onFavoriteClick(product.id) },
+                    // 하트 클릭 → "이 id 상품 좋아요 눌렸어"를 밖(Route)에 알림
                 )
             }
         }
@@ -167,7 +160,6 @@ private fun HomeMenuTabs(
     Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
         HomeMenu.entries.forEach { menu ->
             // HomeMenu.entries = enum 값 전체를 하나씩 꺼냄
-            // HomeMenu는 HomeContract.kt에 있지만 같은 패키지라 import 없이 바로 씀
             TabMenuItem(
                 text = menu.label, // 화면엔 "홈" 같은 글자
                 isSelected = menu == selectedMenu, // 나 == 선택된 메뉴면 선택!
@@ -200,10 +192,20 @@ private fun CategoryChips(
 }
 
 // HomeScreen 전체 미리보기
+// 예전엔 진짜 ViewModel을 만들어서 그렸는데, 이제는 가짜 상태만 넣어서 그림
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
     PlaySoptTheme {
-        HomeScreen()
+        HomeScreen(
+            uiState = HomeUiState(
+                selectedMenu = HomeMenu.BEAUTY, // 뷰티 탭 선택된 상태
+                selectedCategory = ProductCategory.PANTS, // 팬츠 칩 선택된 상태
+                products = dummyProductList, // 더미 상품 넣어서 카드까지 보이게
+            ),
+            onMenuClick = {},
+            onCategoryClick = {},
+            onFavoriteClick = {},
+        )
     }
 }
