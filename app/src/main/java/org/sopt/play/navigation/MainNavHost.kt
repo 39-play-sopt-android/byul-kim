@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.sopt.play.home.HomeScreen
 import org.sopt.play.login.LoginRoute
-import org.sopt.play.register.RegisterScreen
+import org.sopt.play.register.RegisterRoute
 
 // 1주차엔 화면마다 Activity(집)가 따로 있었는데, 이제는 MainActivity 하나 안에서
 // 이 NavHost가 화면(Login, Register, Home)을 바꿔 끼워줌 → SAA
@@ -53,13 +53,14 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         }
 
         // Register 화면
+        // Register 화면
         composable<Register> {
-            RegisterScreen(
-                // RegisterScreen이 가입 버튼 누르면 이메일, 비번을 위로 올려보냄
-                onRegisterSuccess = { email, password ->       // 가입 성공 정보 받으면
-                    registeredEmail = email                  // 거실에 짐 저장
+            RegisterRoute(
+                // RegisterRoute가 가입 성공하면 이메일, 비번을 위로 올려보냄
+                onRegisterSuccess = { email, password -> // 가입 성공 정보 받으면
+                    registeredEmail = email // 거실에 짐 저장
                     registeredPassword = password
-                    navController.popBackStack()             // 뒤로 = Login으로
+                    navController.popBackStack() // 뒤로 = Login으로
                 },
             )
         }
