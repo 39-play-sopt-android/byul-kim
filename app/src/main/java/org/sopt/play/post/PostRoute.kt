@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun PostRoute(
+    author: String,
     modifier: Modifier = Modifier,
     viewModel: PostViewModel = viewModel(),
 ) {

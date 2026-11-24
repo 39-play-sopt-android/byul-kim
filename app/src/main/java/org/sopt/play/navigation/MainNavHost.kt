@@ -14,8 +14,6 @@ import org.sopt.play.login.LoginRoute
 import org.sopt.play.post.PostRoute
 import org.sopt.play.register.RegisterRoute
 
-// 이 NavHost가 화면(Login, Register, Home, Post)을 바꿔 끼워줌 → SAA
-// 화면끼리 어떻게 이동하는지가 전부 이 파일 한 곳에 모여 있어서 앱 흐름을 한눈에 볼 수 있음
 @Composable
 fun MainNavHost(modifier: Modifier = Modifier) {
     // ① 화면 이동 담당
@@ -24,7 +22,10 @@ fun MainNavHost(modifier: Modifier = Modifier) {
     // rememberNavController()에 remember 내장 → 다시 그려져도 기록 유지
     val navController = rememberNavController()
 
-    // ② 회원가입 정보 (= 거실에 둔 짐) → Login, Register 둘 다 써야 해서 여기에
+    // ② 회원가입 정보
+    // 회원가입 화면은 가입 끝나면 닫혀서(popBackStack) 그 안의 값도 사라짐
+    // → 화면들보다 오래 사는 NavHost에 올려두고, 필요한 화면에 내려줌
+    var registeredName by remember { mutableStateOf("") }
     var registeredEmail by remember { mutableStateOf("") }
     var registeredPassword by remember { mutableStateOf("") }
 
@@ -38,14 +39,14 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         // Login 화면
         composable<Login> {
             LoginRoute(
-                registeredEmail = registeredEmail, // 짐 내려주기
+                registeredEmail = registeredEmail,
                 registeredPassword = registeredPassword,
-                onLoginSuccess = { // "성공!" 들으면
+                onLoginSuccess = {
                     navController.navigate(Home) { // Home으로 이동하고
                         popUpTo<Login> { inclusive = true } // Login 기록 지우기
                     }
                 },
-                onRegisterClick = { // "회원가입!" 들으면
+                onRegisterClick = {
                     navController.navigate(Register) // Register로 이동
                 },
             )
@@ -54,11 +55,12 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         // Register 화면
         composable<Register> {
             RegisterRoute(
-                // RegisterRoute가 가입 성공하면 이메일, 비번을 위로 올려보냄
-                onRegisterSuccess = { email, password -> // 가입 성공 정보 받으면
-                    registeredEmail = email // 거실에 짐 저장
+                // RegisterRoute가 가입 성공하면 이름, 이메일, 비번을 위로 올려보냄
+                onRegisterSuccess = { name, email, password -> // 가입 성공 정보 3개 받으면
+                    registeredName = name
+                    registeredEmail = email
                     registeredPassword = password
-                    navController.popBackStack() // 뒤로 = Login으로
+                    navController.popBackStack() // 뒤로 = Login으로 (이때 회원가입 화면 + ViewModel 사라짐)
                 },
             )
         }
@@ -66,15 +68,17 @@ fun MainNavHost(modifier: Modifier = Modifier) {
         // Home 화면
         composable<Home> {
             HomeRoute(
-                onSearchClick = { // "검색 아이콘 눌렸어!" 들으면
-                    navController.navigate(Post) // Post로 이동 (Home 기록은 남김 → 뒤로가기하면 홈으로)
+                onSearchClick = {
+                    navController.navigate(Post)
                 },
             )
         }
 
         // Post 화면 (게시글)
         composable<Post> {
-            PostRoute()
+            PostRoute(
+                author = registeredName,
+            )
         }
     }
 }
