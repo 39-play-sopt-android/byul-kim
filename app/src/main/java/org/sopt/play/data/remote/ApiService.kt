@@ -3,10 +3,13 @@ package org.sopt.play.data.remote
 import org.sopt.play.data.remote.dto.AuthorizationCodeRequest
 import org.sopt.play.data.remote.dto.AuthorizationCodeResponse
 import org.sopt.play.data.remote.dto.BaseResponse
+import org.sopt.play.data.remote.dto.CreatePostRequest
+import org.sopt.play.data.remote.dto.PostResponse
 import org.sopt.play.data.remote.dto.PostSliceResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 // 서버 API 목록
@@ -18,4 +21,10 @@ interface ApiService {
 
     @GET("/api/v1/posts")
     suspend fun getPosts(): Response<BaseResponse<PostSliceResponse>>
+
+    @POST("/api/v1/posts")
+    suspend fun createPost(
+        @Header("Authorization") authorizationCode: String,
+        @Body request: CreatePostRequest,
+    ): Response<BaseResponse<PostResponse>>
 }
