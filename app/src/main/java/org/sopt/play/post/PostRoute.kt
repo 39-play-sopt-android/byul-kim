@@ -37,6 +37,11 @@ fun PostRoute(
     PostScreen(
         uiState = uiState,
         onKeywordChange = viewModel::onKeywordChange,
+        onFabClick = viewModel::onFabClick,
+        onSheetDismiss = viewModel::onSheetDismiss,
+        onTitleChange = viewModel::onTitleChange,
+        onContentChange = viewModel::onContentChange,
+        onCompleteClick = { viewModel.onCompleteClick(author) },
         modifier = modifier,
     )
 }

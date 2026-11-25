@@ -2,16 +2,25 @@ package org.sopt.play.post
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.sopt.play.R
+import org.sopt.play.component.PostBottomSheet
 import org.sopt.play.component.PostCard
 import org.sopt.play.component.SearchTextField
 import org.sopt.play.ui.theme.PlaySoptTheme
@@ -20,29 +29,65 @@ import org.sopt.play.ui.theme.PlaySoptTheme
 fun PostScreen(
     uiState: PostUiState,
     onKeywordChange: (String) -> Unit,
+    onFabClick: () -> Unit,
+    onSheetDismiss: () -> Unit,
+    onTitleChange: (String) -> Unit,
+    onContentChange: (String) -> Unit,
+    onCompleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(PlaySoptTheme.colors.white),
     ) {
-        SearchTextField(
-            value = uiState.keyword,
-            onValueChange = onKeywordChange,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            SearchTextField(
+                value = uiState.keyword,
+                onValueChange = onKeywordChange,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            )
 
-        LazyColumn(
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            items(
-                items = uiState.posts,
-                key = { post -> post.id },
-            ) { post ->
-                PostCard(post = post)
+            LazyColumn(
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 96.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(
+                    items = uiState.posts,
+                    key = { post -> post.id },
+                ) { post ->
+                    PostCard(post = post)
+                }
             }
+        }
+
+        FloatingActionButton(
+            onClick = onFabClick,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 20.dp)
+                .size(60.dp),
+            shape = CircleShape,
+            containerColor = PlaySoptTheme.colors.red,
+            contentColor = PlaySoptTheme.colors.white,
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_plus),
+                contentDescription = "게시글 작성",
+                modifier = Modifier.size(28.dp),
+            )
+        }
+
+        if (uiState.isSheetVisible) {
+            PostBottomSheet(
+                title = uiState.title,
+                content = uiState.content,
+                isCompleteEnabled = uiState.isCompleteEnabled,
+                onTitleChange = onTitleChange,
+                onContentChange = onContentChange,
+                onCompleteClick = onCompleteClick,
+                onDismiss = onSheetDismiss,
+            )
         }
     }
 }
@@ -71,6 +116,11 @@ private fun PostScreenPreview() {
                 ),
             ),
             onKeywordChange = {},
+            onFabClick = {},
+            onSheetDismiss = {},
+            onTitleChange = {},
+            onContentChange = {},
+            onCompleteClick = {},
         )
     }
 }
