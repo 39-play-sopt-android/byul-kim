@@ -8,9 +8,11 @@ import org.sopt.play.data.remote.dto.PostResponse
 import org.sopt.play.data.remote.dto.PostSliceResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 // 서버 API 목록
 interface ApiService {
@@ -27,4 +29,10 @@ interface ApiService {
         @Header("Authorization") authorizationCode: String,
         @Body request: CreatePostRequest,
     ): Response<BaseResponse<PostResponse>>
+
+    @DELETE("/api/v1/posts/{postId}")
+    suspend fun deletePost(
+        @Header("Authorization") authorizationCode: String,
+        @Path("postId") postId: Long,
+    ): Response<Unit>
 }

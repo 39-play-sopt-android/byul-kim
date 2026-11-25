@@ -108,6 +108,48 @@ class PostViewModel : ViewModel() {
         }
     }
 
+    // 카드 길게 누름 → 이 글을 지울 대상으로 기억 → 모달 뜸
+    fun onPostLongClick(postId: Long) {
+        _uiState.update { it.copy(deleteTargetId = postId) }
+    }
+
+    // 모달 취소 / 바깥 터치 → 대상 비우기 → 모달 닫힘
+    fun onDeleteDialogDismiss() {
+        _uiState.update { it.copy(deleteTargetId = null) }
+    }
+
+    // 모달 삭제 버튼 → 모달 닫고 게시글 삭제 API 호출
+    fun onDeleteConfirm() {
+        val postId = _uiState.value.deleteTargetId ?: return
+        // 지울 id 먼저 꺼내기 (null이면 지울 게 없으니 끝)
+
+        _uiState.update { it.copy(deleteTargetId = null) }
+
+        viewModelScope.launch {
+            runCatching {
+                val authorizationCode = getAuthorizationCode()
+                RetrofitClient.apiService.deletePost(
+                    authorizationCode = authorizationCode,
+                    postId = postId,
+                )
+            }.onSuccess { response ->
+                if (response.isSuccessful) {
+                    _uiState.update { state ->
+                        state.copy(posts = state.posts.filterNot { post -> post.id == postId })
+                    }
+                    // 서버에서 지웠으니 내 목록에서도 그 글만 빼기 (다시 조회 안 함)
+                } else {
+                    _sideEffect.emit(
+                        PostSideEffect.ShowToast(response.errorMessage("게시글을 삭제하지 못했어요.")),
+                    )
+                }
+            }.onFailure { e ->
+                Log.e("PostViewModel", "게시글 삭제 실패", e)
+                _sideEffect.emit(PostSideEffect.ShowToast("게시글을 삭제하지 못했어요."))
+            }
+        }
+    }
+
     // 인증 코드 꺼내기
     private suspend fun getAuthorizationCode(): String {
         AuthStorage.authorizationCode?.let { savedCode -> return savedCode }

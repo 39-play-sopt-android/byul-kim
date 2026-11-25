@@ -42,6 +42,9 @@ fun PostRoute(
         onTitleChange = viewModel::onTitleChange,
         onContentChange = viewModel::onContentChange,
         onCompleteClick = { viewModel.onCompleteClick(author) },
+        onPostLongClick = viewModel::onPostLongClick,
+        onDeleteDialogDismiss = viewModel::onDeleteDialogDismiss,
+        onDeleteConfirm = viewModel::onDeleteConfirm,
         modifier = modifier,
     )
 }

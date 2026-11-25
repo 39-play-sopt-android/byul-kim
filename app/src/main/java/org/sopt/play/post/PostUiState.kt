@@ -7,7 +7,11 @@ data class PostUiState(
     val isSheetVisible: Boolean = false,
     val title: String = "",
     val content: String = "",
+    val deleteTargetId: Long? = null,
 ) {
     val isCompleteEnabled: Boolean
         get() = title.isNotBlank() && content.isNotBlank()
+
+    val isDeleteDialogVisible: Boolean
+        get() = deleteTargetId != null
 }

@@ -1,6 +1,7 @@
 package org.sopt.play.post
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,15 +12,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.sopt.play.R
+import org.sopt.play.component.DeleteDialog
 import org.sopt.play.component.PostBottomSheet
 import org.sopt.play.component.PostCard
 import org.sopt.play.component.SearchTextField
@@ -34,6 +38,9 @@ fun PostScreen(
     onTitleChange: (String) -> Unit,
     onContentChange: (String) -> Unit,
     onCompleteClick: () -> Unit,
+    onPostLongClick: (Long) -> Unit,
+    onDeleteDialogDismiss: () -> Unit,
+    onDeleteConfirm: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -56,7 +63,15 @@ fun PostScreen(
                     items = uiState.posts,
                     key = { post -> post.id },
                 ) { post ->
-                    PostCard(post = post)
+                    PostCard(
+                        post = post,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .combinedClickable(
+                                onClick = {},
+                                onLongClick = { onPostLongClick(post.id) },
+                            ),
+                    )
                 }
             }
         }
@@ -87,6 +102,13 @@ fun PostScreen(
                 onContentChange = onContentChange,
                 onCompleteClick = onCompleteClick,
                 onDismiss = onSheetDismiss,
+            )
+        }
+
+        if (uiState.isDeleteDialogVisible) {
+            DeleteDialog(
+                onConfirm = onDeleteConfirm,
+                onDismiss = onDeleteDialogDismiss,
             )
         }
     }
@@ -121,6 +143,9 @@ private fun PostScreenPreview() {
             onTitleChange = {},
             onContentChange = {},
             onCompleteClick = {},
+            onPostLongClick = {},
+            onDeleteDialogDismiss = {},
+            onDeleteConfirm = {},
         )
     }
 }
