@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
                     MainNavHost(
                         modifier = Modifier
                             .padding(innerPadding)
-                            .consumeWindowInsets(innerPadding),   // 키보드 중복 패딩 방지
+                            .consumeWindowInsets(innerPadding),
                     )
                 }
             }

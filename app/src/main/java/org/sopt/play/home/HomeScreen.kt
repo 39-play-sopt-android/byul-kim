@@ -52,15 +52,14 @@ fun HomeScreen(
     onMenuClick: (HomeMenu) -> Unit, // 메뉴 탭 누르면 할 일
     onCategoryClick: (ProductCategory) -> Unit, // 카테고리 칩 누르면 할 일
     onFavoriteClick: (Int) -> Unit, // 하트 누르면 할 일 (Int = 눌린 상품 id)
+    onSearchClick: () -> Unit, // 탑바 검색 아이콘 누르면 할 일 (게시글 화면 이동)
     modifier: Modifier = Modifier,
 ) {
     // Scaffold = 화면 뼈대
     Scaffold(
         modifier = modifier,
         containerColor = PlaySoptTheme.colors.white, // 화면 배경 흰색
-        topBar = { PlaySoptTopBar() },
-        // topBar 자리에 넣은 건 스크롤해도 안 움직이고 위에 고정됨
-        // 피그마 세로 스크롤 화면을 보면 PLAY SOPT만 고정이라서 여기에 넣음
+        topBar = { PlaySoptTopBar(onSearchClick = onSearchClick) },
     ) { innerPadding ->
         // innerPadding = Scaffold가 계산해서 주는 여백 (탑바 높이만큼)
 
@@ -206,6 +205,7 @@ private fun HomeScreenPreview() {
             onMenuClick = {},
             onCategoryClick = {},
             onFavoriteClick = {},
+            onSearchClick = {},
         )
     }
 }

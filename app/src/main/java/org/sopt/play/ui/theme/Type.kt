@@ -94,6 +94,22 @@ val R14 = TextStyle(
     letterSpacing = (-0.14).sp,    // 자간 -1% → 14 × -0.01
 )
 
+val M12 = TextStyle(
+    fontFamily = Pretendard,
+    fontWeight = FontWeight.Medium,
+    fontSize = 12.sp,
+    lineHeight = 14.4.sp,
+    letterSpacing = (-0.12).sp,
+)
+
+val M16 = TextStyle(
+    fontFamily = Pretendard,
+    fontWeight = FontWeight.Medium,
+    fontSize = 16.sp,
+    lineHeight = 19.2.sp,
+    letterSpacing = (-0.16).sp,
+)
+
 @Immutable
 data class PlaySoptTypography(
     val b28: TextStyle = B28,
@@ -102,6 +118,8 @@ data class PlaySoptTypography(
     val sb14: TextStyle = Sb14,
     val m14: TextStyle = M14,
     val r14: TextStyle = R14,
+    val m12: TextStyle = M12,
+    val m16: TextStyle = M16,
 )
 
 val LocalPlaySoptTypography = staticCompositionLocalOf { PlaySoptTypography() }

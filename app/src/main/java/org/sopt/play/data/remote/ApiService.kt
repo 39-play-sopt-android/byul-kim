@@ -1,0 +1,38 @@
+package org.sopt.play.data.remote
+
+import org.sopt.play.data.remote.dto.AuthorizationCodeRequest
+import org.sopt.play.data.remote.dto.AuthorizationCodeResponse
+import org.sopt.play.data.remote.dto.BaseResponse
+import org.sopt.play.data.remote.dto.CreatePostRequest
+import org.sopt.play.data.remote.dto.PostResponse
+import org.sopt.play.data.remote.dto.PostSliceResponse
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.Path
+
+// 서버 API 목록
+interface ApiService {
+    @POST("/api/v1/members/authorization-code")
+    suspend fun createAuthorizationCode(
+        @Body request: AuthorizationCodeRequest,
+    ): Response<AuthorizationCodeResponse>
+
+    @GET("/api/v1/posts")
+    suspend fun getPosts(): Response<BaseResponse<PostSliceResponse>>
+
+    @POST("/api/v1/posts")
+    suspend fun createPost(
+        @Header("Authorization") authorizationCode: String,
+        @Body request: CreatePostRequest,
+    ): Response<BaseResponse<PostResponse>>
+
+    @DELETE("/api/v1/posts/{postId}")
+    suspend fun deletePost(
+        @Header("Authorization") authorizationCode: String,
+        @Path("postId") postId: Long,
+    ): Response<Unit>
+}
